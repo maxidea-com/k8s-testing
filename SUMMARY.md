@@ -11,6 +11,6 @@
 * [登录docker hub并上传镜像](dan-ji-ce-shi/deng-lu-docker-hub.md)
 * [服务器间镜像文件快速复制](dan-ji-ce-shi/fu-wu-qi-jian-jing-xiang-wen-jian-kuai-su-fu-zhi.md)
 * [MySQL镜像安装和测试](dan-ji-ce-shi/mysql-jing-xiang-an-zhuang-he-ce-shi.md)
-* [容器网络入门操作1](dan-ji-ce-shi/rong-qi-wang-luo-ru-men-cao-zuo.md)
-* [容器网络入门操作2](dan-ji-ce-shi/rong-qi-wang-luo-ru-men-cao-zuo-2.md)
+* [容器网络入门操作1](dan-ji-ce-shi/container-network-startup-testing1.md)
+* [容器网络入门操作2](dan-ji-ce-shi/container-network-startup-testing2.md)
 

@@ -17,5 +17,5 @@
 
 ## 配置应用测试
 
-* [Wordpress+Mysql安装](pei-zhi-ying-yong-ce-shi/wordpress.md)
+* [Wordpress+Mysql安装](pei-zhi-ying-yong-ce-shi/wordpress-mysql-installation.md)
 

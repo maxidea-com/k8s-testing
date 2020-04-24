@@ -74,7 +74,7 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 5104ca874b9e        mysql:5.7           "docker-entrypoint.s…"   2 hours ago         Up 2 hours          3306/tcp, 33060/tcp     mysql4
 ```
 
-也可以使用docker port查看：
+也可以使用`docker port`查看：
 
 ```text
 root@09-1:~# docker port nginx2

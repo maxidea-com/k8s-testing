@@ -1,8 +1,8 @@
 # Table of contents
 
-* [前期准备](README.md)
-* [安装Docker](untitled.md)
-* [Docker配置文件daemon.json](docker-pei-zhi-wen-jian-daemon.json.md)
+* [从docker到K8s测试笔记](README.md)
+* [设备准备](server-hardware-setup.md)
+* [安装Docker](docker-installation.md)
 
 ## 拉取镜像和运行测试 <a id="dan-ji-ce-shi"></a>
 

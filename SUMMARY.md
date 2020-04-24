@@ -14,8 +14,9 @@
 * [容器网络入门操作1](dan-ji-ce-shi/container-network-startup-testing1.md)
 * [容器网络入门操作2](dan-ji-ce-shi/container-network-startup-testing2.md)
 * [创建docker network](dan-ji-ce-shi/create-docker-network.md)
+* [Wordpress+Mysql+nginx反向代理安装](dan-ji-ce-shi/wordpress-mysql-nginx-installation.md)
 
-## 配置应用测试
+## Docker编排模板测试 <a id="docker-compose-testing"></a>
 
-* [Wordpress+Mysql+nginx反向代理安装](pei-zhi-ying-yong-ce-shi/wordpress-mysql-nginx-installation.md)
+* [通过docker compose安装Wordpress](tong-guo-docker-compose-an-zhuang-wordpress.md)
 

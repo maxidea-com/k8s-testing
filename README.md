@@ -2,7 +2,9 @@
 
 参考资料：
 
-[https://github.com/K8SClub](https://github.com/K8SClub)
+{% embed url="https://github.com/K8SClub" %}
+
+[https://docs.docker.com/compose/compose-file/](https://docs.docker.com/compose/compose-file/)
 
 
 

@@ -9,7 +9,8 @@ description: 根据上一个测试的环境，使用docker compose实现一个�
 首先把前一个实验的三个容器全部删除（如果服务器上还有其他容器要保留，不要使用以下命令）：
 
 ```text
-docker stop $(docker ps -q) && docker rm $(docker ps -aq)
+docker stop $(docker ps -q) 
+docker rm $(docker ps -aq)
 ```
 
 然后创建一个`docker-compose.yaml`文件：
@@ -86,5 +87,74 @@ ea683c8ec5dc        nginx:alpine         "nginx -g 'daemon of…"   47 seconds a
 
 恢复容器运行：`docker-compose start`
 
+## 单机编排测试2：
 
+使用本地域名和ip地址来编排容器，`docker-compose.yaml`文件修改如下：
+
+```text
+version: '3'
+
+services:
+  
+  db:
+    image: mysql:5.7
+    container_name: db.maxidea.com
+    volumes:
+    - ./db/data/:/var/lib/mysql/
+    env_file: 
+    - ./db/env.list
+    networks:
+      net2:
+        ipv4_address: 10.10.1.101
+    expose:
+    - "3306"
+
+  wp:
+    image: wordpress:5-php7.2
+    container_name: wp.maxidea.com
+    env_file: 
+    - ./wp/env.list
+    networks:
+      net2:
+        ipv4_address: 10.10.1.102
+    expose:
+    - "80"
+    ports:
+    - "8080:80"
+    extra_hosts:
+    - "db.maxidea.com:10.10.1.101"
+    - "nx.maxidea.com:10.10.1.103"
+
+  nginx:
+    image: nginx:alpine
+    container_name: nx.maxidea.com
+    volumes:
+    - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      net2:
+        ipv4_address: 10.10.1.103
+    expose:
+    - "80"
+    ports:
+    - "80:80"
+    extra_hosts:
+    - "db.maxidea.com:10.10.1.101"
+    - "wp.maxidea.com:10.10.1.102"
+
+networks:
+  net2: 
+    ipam:
+      driver: default
+      config:
+        - subnet: "10.10.1.0/24"
+```
+
+运行效果：
+
+```text
+CONTAINER ID        IMAGE                COMMAND                  CREATED             STATUS              PORTS                  NAMES
+f869d6d5818f        nginx:alpine         "nginx -g 'daemon of…"   13 seconds ago      Up 11 seconds       0.0.0.0:80->80/tcp     nx.maxidea.com
+d1e1e39b51db        mysql:5.7            "docker-entrypoint.s…"   13 seconds ago      Up 11 seconds       3306/tcp, 33060/tcp    db.maxidea.com
+faf42ab22d04        wordpress:5-php7.2   "docker-entrypoint.s…"   13 seconds ago      Up 12 seconds       0.0.0.0:8080->80/tcp   wp.maxidea.com
+```
 

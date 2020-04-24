@@ -4,6 +4,8 @@ description: 根据上一个测试的环境，使用docker compose实现一个�
 
 # 通过docker compose安装Wordpress
 
+## 单机编排测试1：
+
 首先把前一个实验的三个容器全部删除（如果服务器上还有其他容器要保留，不要使用以下命令）：
 
 ```text
@@ -75,6 +77,14 @@ ea683c8ec5dc        nginx:alpine         "nginx -g 'daemon of…"   47 seconds a
 9267439c0a0e        wordpress:5-php7.2   "docker-entrypoint.s…"   48 seconds ago      Up 47 seconds       0.0.0.0:8080->80/tcp   wordpress_wp_1
 2aba0bad886d        mysql:5.7            "docker-entrypoint.s…"   48 seconds ago      Up 48 seconds       3306/tcp, 33060/tcp    wordpress_db_1
 ```
+
+如果要使容器在后台运行，只需要像`docker run`一样添加 `-d`参数即可。
+
+停止并删除容器：`docker-compose down`
+
+停止但不删除容器：`docker-compose stop`
+
+恢复容器运行：`docker-compose start`
 
 
 

@@ -4,7 +4,7 @@
 
 借用[Fuck PHP-FPM with FastCGI](https://blog.1pwnch.com/websecurity/2019/06/12/Fuck-PHP-FPM-with-Fastcgi/)一文的图片，就很好理解这个处理过程：
 
-![](../.gitbook/assets/image%20%287%29.png)
+![](../.gitbook/assets/image%20%285%29.png)
 
 首先拉取镜像：
 

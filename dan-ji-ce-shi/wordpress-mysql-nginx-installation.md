@@ -97,7 +97,7 @@ e160335b6070        nginx:alpine         "nginx -g 'daemon of…"   56 seconds a
 
 现在访问宿主机，不用添加8080端口也能访问到wordpress了：
 
-![](../.gitbook/assets/image%20%285%29.png)
+![](../.gitbook/assets/image%20%282%29.png)
 
 
 

@@ -17,7 +17,7 @@ docker stop $(docker ps -q)
 docker rm $(docker ps -aq)
 ```
 
-创建一个www.conf文件，内容如下，用于等会替换容器内默认的/usr/local/etc/php-fpm.d/www.conf：
+创建一个www.conf文件，内容如下，用于等会替换容器内默认的`/usr/local/etc/php-fpm.d/www.conf`：
 
 ```text
 [www]
@@ -31,9 +31,100 @@ pm.min_spare_servers = 1
 pm.max_spare_servers = 3
 ```
 
+修改nginx用的`default.conf`为如下：
 
+```text
+server {
+    listen       80;
+    server_name  localhost;
 
+    access_log  /var/log/nginx/host.access.log  main;
 
+    location / {
+        root   /var/www/html;
+        index  index.php index.html index.htm;
+        try_files $uri $uri/ /index.php?$args;
+    }
+
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+         root   /usr/share/nginx/html;
+    }
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    
+    location ~ \.php$ {
+        fastcgi_pass   wp.maxidea.com:9000;
+        fastcgi_index  index.php;
+        fastcgi_param SCRIPT_FILENAME /var/www/html$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+}
+```
+
+这里要注意一点，nginx容器需要访问得到wordpress-fpm容器内的`/var/www/html`目录的内容，所以在修改docker-compose文件时要注意把存储卷共享给两个容器一同访问。
+
+修改`docker-compose.yaml`文件成如下：
+
+```text
+version: '3'
+
+services:
+  
+  db:
+    image: mysql:5.7
+    container_name: db.maxidea.com
+    volumes:
+    - ./db/data/:/var/lib/mysql/
+    env_file: 
+    - ./db/env.list
+    networks:
+      net2:
+        ipv4_address: 10.10.1.101
+    expose:
+    - "3306"
+
+  wp:
+    image: wordpress:5-php7.2-fpm
+    container_name: wp.maxidea.com
+    volumes:
+    - ./fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+    - ./wp/wwwdata:/var/www/html
+    env_file: 
+    - ./wp/env.list
+    networks:
+      net2:
+        ipv4_address: 10.10.1.102
+    expose:
+    - "9000"
+    extra_hosts:
+    - "db.maxidea.com:10.10.1.101"
+    - "nx.maxidea.com:10.10.1.103"
+
+  nginx:
+    image: nginx:alpine
+    container_name: nx.maxidea.com
+    volumes:
+    - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    - ./wp/wwwdata:/var/www/html
+    networks:
+      net2:
+        ipv4_address: 10.10.1.103
+    expose:
+    - "80"
+    ports:
+    - "80:80"
+    extra_hosts:
+    - "db.maxidea.com:10.10.1.101"
+    - "wp.maxidea.com:10.10.1.102"
+
+networks:
+  net2: 
+    ipam:
+      driver: default
+      config:
+        - subnet: "10.10.1.0/24"
+```
 
 
 

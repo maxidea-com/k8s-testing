@@ -46,11 +46,11 @@ terminal会返回错误信息：`You cannot attach to a stopped container, start
 
 `sudo docker start 9`
 
-而进去另一个容器，使用ctrl+p+q退出的，就完全没有问题。
+实际工作中，为避免操作错误导致容器停止运作，一般进入容器都使用命令 docker exec，例如：
 
-`sudo docker attach e`
+`sudo docker exec -it bbox /bin/bash`
 
-
+这样exit后容器不会停止运行。
 
 
 

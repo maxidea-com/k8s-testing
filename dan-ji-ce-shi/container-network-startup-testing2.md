@@ -54,7 +54,7 @@ Commercial support is available at
 </html>
 ```
 
-但是这个nginx在宿主机以外是无法访问的，关于docker内置支持的四种网络类型，可以参考马哥的讲义里的这张图：
+但是这个nginx在宿主机以外是无法访问的，关于docker内置支持的四种网络类型，可以参考这张图：
 
 ![docker&#x5185;&#x7F6E;&#x652F;&#x6301;&#x7684;&#x56DB;&#x79CD;&#x7F51;&#x7EDC;&#x7C7B;&#x578B;](../.gitbook/assets/image%20%283%29.png)
 

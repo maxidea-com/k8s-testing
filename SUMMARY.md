@@ -19,4 +19,6 @@
 ## Docker编排模板测试 <a id="docker-compose-testing"></a>
 
 * [通过docker compose安装Wordpress](tong-guo-docker-compose-an-zhuang-wordpress.md)
+* [安装wordpress-fpm](an-zhuang-wordpressfpm.md)
+* [Untitled](untitled.md)
 

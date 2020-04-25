@@ -25,7 +25,7 @@ sudo docker run -v /data/mysql:/var/lib/mysql --name mysql1 -it mysql:5.7
 
 这里创建出来的容器是停止状态的，而且没有启动成功，因为没有指定数据库的ROOT PASSWORD
 
-所以命令改为加`--env` 或 `--env-file`指定密码等参数运行（加-d 参数，使容器以后台方式运行，不占用终端）：
+所以命令改为加`--env` 或 `-e` 或 `--env-file`指定密码等参数运行（加-d 参数，使容器以后台方式运行，不占用终端）：
 
 ```text
 sudo docker run --env MYSQL_ROOT_PASSWORD='test1234' -d -v /data/mysql:/var/lib/mysql --name mysql2 -it mysql:5.7

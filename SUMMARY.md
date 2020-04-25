@@ -1,6 +1,6 @@
 # Table of contents
 
-* [从docker到K8s测试笔记](README.md)
+* [从docker入门到k8s部署](README.md)
 * [设备准备](server-hardware-setup.md)
 * [安装Docker](docker-installation.md)
 

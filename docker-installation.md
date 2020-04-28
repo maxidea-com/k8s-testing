@@ -1,6 +1,14 @@
 # 安装Docker
 
-安装步骤：
+**使用我预先准备好的一键部署脚本：**
+
+```text
+sudo curl -s https://gitee.com/maxidea/shell/raw/master/docker-install.sh | bash
+```
+
+**或：**
+
+手动安装步骤：
 
 参考：阿里云镜像 [https://developer.aliyun.com/mirror/docker-ce](https://developer.aliyun.com/mirror/docker-ce)
 

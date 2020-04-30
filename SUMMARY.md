@@ -24,4 +24,5 @@
 ## Dockerfile测试
 
 * [Dockerfile入门](dockerfile-ce-shi/dockerfile-ru-men.md)
+* [Dockerfile多阶段构建](dockerfile-ce-shi/dockerfile-duo-jie-duan-gou-jian.md)
 

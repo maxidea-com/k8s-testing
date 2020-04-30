@@ -14,7 +14,7 @@ description: 了解docker命令的几个基本操作方法
 
 `sudo docker images`
 
-查看镜像的构建的详细信息：
+查看镜像构建的详细信息：
 
 `sudo docker image inspect busybox:latest`
 

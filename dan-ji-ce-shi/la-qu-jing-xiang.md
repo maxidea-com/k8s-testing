@@ -14,6 +14,10 @@ description: 了解docker命令的几个基本操作方法
 
 `sudo docker images`
 
+查看镜像的构建的详细信息：
+
+`sudo docker image inspect busybox:latest`
+
 运行这个容器（加-it是产生交换界面和新的terminal）：
 
 `sudo docker run --name bbox -it busybox`

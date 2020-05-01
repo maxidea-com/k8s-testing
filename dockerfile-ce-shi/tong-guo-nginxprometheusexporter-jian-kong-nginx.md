@@ -54,5 +54,7 @@ Reading: 0 Writing: 1 Waiting: 0
 while true ; do curl 172.17.0.2/nginx-status; sleep 2; done
 ```
 
+然后把`/etc/nginx/conf.d/default.conf`复制到宿主机备用：
+
 
 

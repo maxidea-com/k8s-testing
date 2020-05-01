@@ -2,13 +2,15 @@
 description: 'https://hub.docker.com/r/nginx/nginx-prometheus-exporter'
 ---
 
-# 通过nginx-prometheus-exporter监控nginx
+# 通过nginx-prometheus-exporter监控nginx指标
 
 [NGINX](http://nginx.org/) exposes a handful of metrics via the [stub\_status page](http://nginx.org/en/docs/http/ngx_http_stub_status_module.html#stub_status). [NGINX Plus](https://www.nginx.com/products/nginx/) provides a richer set of metrics via the [API](https://nginx.org/en/docs/http/ngx_http_api_module.html) and the [monitoring dashboard](https://www.nginx.com/products/nginx/live-activity-monitoring/). NGINX Prometheus exporter fetches the metrics from a single NGINX or NGINX Plus, converts the metrics into appropriate Prometheus metrics types and finally exposes them via an HTTP server to be collected by [Prometheus](https://prometheus.io/).
 
 对于nginx-prometheus-exporter说明，请见这里：[https://github.com/nginxinc/nginx-prometheus-exporter](https://github.com/nginxinc/nginx-prometheus-exporter)
 
-测试方式，通过多阶段部署，为nginx:alpine镜像合入nginx/nginx-prometheus-exporter中的程序，并使用脚本同时启动二者，注意让nginx运行于前台，且nginx-prometheus-exporter程序能正常输出nginx的指标。
+**测试方式，通过多阶段部署，把nginx:alpine镜像合入nginx/nginx-prometheus-exporter中的程序，并使用脚本同时启动二者，注意让nginx运行于前台，且nginx-prometheus-exporter程序能正常输出nginx的指标。**
+
+## 步骤1：
 
 下载测试到用到镜像：
 
@@ -56,5 +58,42 @@ while true ; do curl 172.17.0.2/nginx-status; sleep 2; done
 
 然后把`/etc/nginx/conf.d/default.conf`复制到宿主机备用：
 
+```text
+root@31:/simon-testing/docker/compose/nginx# docker cp nginx1:/etc/nginx/conf.d/default.conf ./
+```
 
+## 步骤2：
+
+通过nginx-prometheus-exporter容器来监控nginx1的指标，命令如下：
+
+```text
+root@31:/home/ubuntu# docker run -p 9113:9113 nginx/nginx-prometheus-exporter:latest -nginx.scrape-uri http://172.17.0.2/nginx-status                  
+2020/05/01 11:31:38 Starting NGINX Prometheus Exporter Version=0.7.0 GitCommit=a2910f1
+2020/05/01 11:31:38 Listening on :9113
+2020/05/01 11:31:38 NGINX Prometheus Exporter has successfully started
+```
+
+然后在另一个terminal下每秒访问一次nginx1容器的80服务：
+
+```text
+while true ; do curl -s -o /dev/null http://172.17.0.2/; sleep 1; done
+```
+
+最后访问宿主机的IP:9113/metrics页面，就能看到读取出来的nginx指标数据了。
+
+![](../.gitbook/assets/image%20%286%29.png)
+
+
+
+## 步骤3：通过多阶段部署把两个步骤整个到一个镜像里
+
+
+
+
+
+
+
+
+
+参考资料：[https://github.com/nginxinc/nginx-prometheus-exporter](https://github.com/nginxinc/nginx-prometheus-exporter)
 

@@ -59,7 +59,7 @@ while true ; do curl 172.17.0.2/nginx-status; sleep 2; done
 然后把`/etc/nginx/conf.d/default.conf`复制到宿主机备用：
 
 ```text
-root@31:/simon-testing/docker/compose/nginx# docker cp nginx1:/etc/nginx/conf.d/default.conf ./
+root@31:/simon-testing/docker/compose/multistage/nginx# docker cp nginx1:/etc/nginx/conf.d/default.conf ./
 ```
 
 ## 步骤2：
@@ -87,13 +87,71 @@ while true ; do curl -s -o /dev/null http://172.17.0.2/; sleep 1; done
 
 ## 步骤3：通过多阶段部署把两个步骤整个到一个镜像里
 
+创建一个Dockerfile
 
+```text
+# 编译阶段 命名为 base
+FROM nginx/nginx-prometheus-exporter:latest as base
+# 运行阶段
+FROM nginx:alpine
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=base /usr/bin/exporter /usr/bin/exporter
+ADD run.sh /run.sh
+RUN chmod 775 /run.sh
+EXPOSE 80 9113
+CMD [["/bin/sh", "/run.sh"]]
+```
 
+编写run.sh
 
+```text
+#!/bin/bash
+nginx -c /etc/nginx/nginx.conf
+nginx -s reload
+/usr/bin/exporter -nginx.scrape-uri http://127.0.0.1/nginx-status
+tail -f /dev/null #实现本shell永不运行完成，容器不退出。
+```
 
+把dockerfile生成镜像文件：
 
+```text
+docker build . -t nexporter:v0.1
+```
 
+运行容器：`docker run --name expo1 -d nexporter:v0.1`
 
+检查exporter运作情况：
+
+```text
+curl 172.17.0.5:9113/metrics
+# HELP nginx_connections_accepted Accepted client connections
+# TYPE nginx_connections_accepted counter
+nginx_connections_accepted 2
+# HELP nginx_connections_active Active client connections
+# TYPE nginx_connections_active gauge
+nginx_connections_active 1
+# HELP nginx_connections_handled Handled client connections
+# TYPE nginx_connections_handled counter
+nginx_connections_handled 2
+# HELP nginx_connections_reading Connections where NGINX is reading the request header
+# TYPE nginx_connections_reading gauge
+nginx_connections_reading 0
+# HELP nginx_connections_waiting Idle client connections
+# TYPE nginx_connections_waiting gauge
+nginx_connections_waiting 0
+# HELP nginx_connections_writing Connections where NGINX is writing the response back to the client
+# TYPE nginx_connections_writing gauge
+nginx_connections_writing 1
+# HELP nginx_http_requests_total Total http requests
+# TYPE nginx_http_requests_total counter
+nginx_http_requests_total 2
+# HELP nginx_up Status of the last metric scrape
+# TYPE nginx_up gauge
+nginx_up 1
+# HELP nginxexporter_build_info Exporter build information
+# TYPE nginxexporter_build_info gauge
+nginxexporter_build_info{gitCommit="a2910f1",version="0.7.0"} 1
+```
 
 参考资料：[https://github.com/nginxinc/nginx-prometheus-exporter](https://github.com/nginxinc/nginx-prometheus-exporter)
 

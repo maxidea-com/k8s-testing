@@ -26,4 +26,5 @@
 * [Dockerfile入门](dockerfile-ce-shi/dockerfile-ru-men.md)
 * [Dockerfile多阶段构建](dockerfile-ce-shi/dockerfile-duo-jie-duan-gou-jian.md)
 * [通过nginx-prometheus-exporter监控nginx指标](dockerfile-ce-shi/tong-guo-nginxprometheusexporter-jian-kong-nginx.md)
+* [通过Grafana展示nginx容器指标](dockerfile-ce-shi/tong-guo-grafana-zhan-shi-nginx-rong-qi-zhi-biao.md)
 

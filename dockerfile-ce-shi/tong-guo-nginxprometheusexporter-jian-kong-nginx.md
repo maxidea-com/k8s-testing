@@ -120,7 +120,7 @@ docker build . -t nexporter:v0.1
 
 运行容器：`docker run --name expo1 -d nexporter:v0.1`
 
-检查exporter运作情况：
+访问容器ip:9113/metrics检查exporter运作情况：
 
 ```text
 curl 172.17.0.5:9113/metrics

@@ -115,15 +115,19 @@ tail -f /dev/null #实现本shell永不运行完成，容器不退出。
 把dockerfile生成镜像文件：
 
 ```text
-docker build . -t nexporter:v0.1
+docker build . -t nginx-exporter:v0.1
 ```
 
-运行容器：`docker run --name expo1 -d nexporter:v0.1`
-
-访问容器ip:9113/metrics检查exporter运作情况：
+运行容器：
 
 ```text
-curl 172.17.0.5:9113/metrics
+docker run --name exporter1 -d -p 9113:9113 nginx-exporter:v0.1
+```
+
+访问`127.0.0.1:9113/metrics`检查exporter运作情况：
+
+```text
+curl 127.0.0.1:9113/metrics
 # HELP nginx_connections_accepted Accepted client connections
 # TYPE nginx_connections_accepted counter
 nginx_connections_accepted 2

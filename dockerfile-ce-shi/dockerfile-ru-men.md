@@ -10,7 +10,7 @@ description: '指令参考：https://docs.docker.com/engine/reference/builder/'
 
 Dockerfile 中的每一条命令，都在 Docker 镜像中以一个独立镜像层的形式存在，如下图：
 
-![](../.gitbook/assets/image%20%284%29.png)
+![](../.gitbook/assets/image%20%285%29.png)
 
 ## 例子1：
 

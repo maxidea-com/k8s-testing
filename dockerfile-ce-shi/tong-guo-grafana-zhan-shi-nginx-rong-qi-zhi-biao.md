@@ -6,9 +6,9 @@
 
 2）配置Prometheus对指标进行收集（镜像[https://hub.docker.com/r/prom/prometheus](https://hub.docker.com/r/prom/prometheus)）
 
-3）配置Grafana对指标进行展示
+3）配置Grafana对指标进行展示（镜像
 
-**测试1：配置Prometheus对指标进行收集**
+## **测试1：配置Prometheus对指标进行收集**
 
 首先，在宿主机上创建`prometheus.yml`文件，内容如下：
 
@@ -21,16 +21,22 @@ scrape_configs:
      - job_name: 'prometheus'
        static_configs:
        - targets: ['localhost:9090']
-     - job_name: "nginx"
+     - job_name: 'nginx'
        static_configs:
-       - targets: ['localhost:9113']
+       - targets: ['192.168.2.31:9113']
 ```
 
+启动Prometheus容器：
 
+```text
+docker run --name prometheus1 -d -p 9090:9090 -v /simon-testing/docker/compose/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
+```
 
+然后访问宿主机 http://192.168.2.31:9090/targets，获得如下界面即代表Prometheus和Nginx指标均可获取：
 
+![](../.gitbook/assets/image%20%281%29.png)
 
-
+## 测试2：配置Grafana对指标进行展示
 
 
 

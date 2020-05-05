@@ -81,7 +81,7 @@ while true ; do curl -s -o /dev/null http://172.17.0.2/; sleep 1; done
 
 最后访问宿主机的IP:9113/metrics页面，就能看到读取出来的nginx指标数据了。
 
-![](../.gitbook/assets/image%20%286%29.png)
+![](../.gitbook/assets/image%20%287%29.png)
 
 
 

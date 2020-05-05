@@ -71,7 +71,43 @@ providers:
     path: /var/lib/grafana/dashboards
 ```
 
+2-2）定义数据源
 
+创建一个datasouce.yaml文件：
+
+```text
+apiVersion: 1
+
+datasources:
+- name: Prometheus
+  type: prometheus
+  access: proxy
+  orgId: 1
+  url: http://192.168.2.31:9090
+  basicAuth: false
+  isDefault: true
+  version: 1
+  editable: true
+```
+
+**3）启动Grafana容器**
+
+```text
+docker run -d --name=grafana1 \
+-v /simon-testing/docker/compose/grafana/dashboards/dashboard.json:/var/lib/grafana/dashboards/dashboard.json \
+-v /simon-testing/docker/compose/grafana/provisioning/dashboard.yaml:/etc/grafana/provisioning/dashboards/dashboard.yaml \
+-v /simon-testing/docker/compose/grafana/provisioning/datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml \
+-p 3000:3000 grafana/grafana
+```
+
+现在宿主机上三个容器是：
+
+```text
+CONTAINER ID        IMAGE                 COMMAND                  CREATED             STATUS              PORTS                            NAMES
+cccde695f127        grafana/grafana       "/run.sh"                53 seconds ago      Up 52 seconds       0.0.0.0:3000->3000/tcp           grafana1
+772a01072623        prom/prometheus       "/bin/prometheus --c…"   7 hours ago         Up 7 hours          0.0.0.0:9090->9090/tcp           prometheus1
+a72a9bf37387        nginx-exporter:v0.1   "/bin/sh /run.sh"        46 hours ago        Up 46 hours         80/tcp, 0.0.0.0:9113->9113/tcp   exporter1
+```
 
 
 

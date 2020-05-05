@@ -31,19 +31,23 @@ nginx version: nginx/1.17.10 built by gcc 9.2.0 (Alpine 9.2.0) built with OpenSS
 
 看到`--with-http_stub_status_module`，证明这个镜像已经编译好了stub\_status 模块
 
-编辑 `/etc/nginx/conf.d/default.conf`，加入：
+创建`/etc/nginx/conf.d/status.conf`，加入：
 
 ```text
-    location /nginx-status {                
-       stub_status on;                      
-       access_log off;                                        
-    }     
+server {
+    listen 8080;
+    server_name  localhost;
+    location /stub_status {
+       stub_status on;
+       access_log off;
+    }
+}
 ```
 
-`/usr/sbin/nginx -s reload`重启，然后在新terminal访问容器ip/stub\_status页面：
+`/usr/sbin/nginx -s reload`重启，然后在新terminal访问容器ip:8080/stub\_status页面：
 
 ```text
-root@31:/home/ubuntu# curl 172.17.0.2/nginx-status
+root@31:/home/ubuntu# curl 172.17.0.5:8080/stub_status
 Active connections: 1 
 server accepts handled requests
  3 3 3 
@@ -53,13 +57,13 @@ Reading: 0 Writing: 1 Waiting: 0
 利用while语句做一个循环输出就可以实现简单的访问量监控：
 
 ```text
-while true ; do curl 172.17.0.2/nginx-status; sleep 2; done
+while true ; do curl 172.17.0.5:8080/stub_status; sleep 2; done
 ```
 
-然后把`/etc/nginx/conf.d/default.conf`复制到宿主机备用：
+然后把`/etc/nginx/conf.d/status.conf`复制到宿主机备用：
 
 ```text
-root@31:/simon-testing/docker/compose/multistage/nginx# docker cp nginx1:/etc/nginx/conf.d/default.conf ./
+docker cp nginx1:/etc/nginx/conf.d/status.conf ./
 ```
 
 ## 步骤2：
@@ -67,7 +71,7 @@ root@31:/simon-testing/docker/compose/multistage/nginx# docker cp nginx1:/etc/ng
 通过nginx-prometheus-exporter容器来监控nginx1的指标，命令如下：
 
 ```text
-root@31:/home/ubuntu# docker run -p 9113:9113 nginx/nginx-prometheus-exporter:latest -nginx.scrape-uri http://172.17.0.2/nginx-status                  
+root@31:/home/ubuntu# docker run -p 9113:9113 nginx/nginx-prometheus-exporter:latest -nginx.scrape-uri http://172.17.0.5:8080/stub_status                  
 2020/05/01 11:31:38 Starting NGINX Prometheus Exporter Version=0.7.0 GitCommit=a2910f1
 2020/05/01 11:31:38 Listening on :9113
 2020/05/01 11:31:38 NGINX Prometheus Exporter has successfully started
@@ -81,7 +85,7 @@ while true ; do curl -s -o /dev/null http://172.17.0.2/; sleep 1; done
 
 最后访问宿主机的IP:9113/metrics页面，就能看到读取出来的nginx指标数据了。
 
-![](../.gitbook/assets/image%20%287%29.png)
+![](../.gitbook/assets/image%20%288%29.png)
 
 
 
@@ -90,16 +94,16 @@ while true ; do curl -s -o /dev/null http://172.17.0.2/; sleep 1; done
 创建一个Dockerfile
 
 ```text
-# 编译阶段 命名为 base
-FROM nginx/nginx-prometheus-exporter:latest as base
+# 编译阶段 命名为 exporter
+FROM nginx/nginx-prometheus-exporter:latest as exporter
 # 运行阶段
 FROM nginx:alpine
-COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY --from=base /usr/bin/exporter /usr/bin/exporter
+COPY ./nginx/status.conf /etc/nginx/conf.d/status.conf
+COPY --from=exporter /usr/bin/exporter /usr/bin/exporter
 ADD run.sh /run.sh
-RUN chmod 775 /run.sh
+RUN chmod 777 /run.sh
 EXPOSE 80 9113
-CMD [["/bin/sh", "/run.sh"]]
+CMD ["/bin/sh", "/run.sh"]
 ```
 
 编写run.sh
@@ -108,54 +112,25 @@ CMD [["/bin/sh", "/run.sh"]]
 #!/bin/bash
 nginx -c /etc/nginx/nginx.conf
 nginx -s reload
-/usr/bin/exporter -nginx.scrape-uri http://127.0.0.1/nginx-status
+/usr/bin/exporter -nginx.scrape-uri http://127.0.0.1/stub_status
 tail -f /dev/null #实现本shell永不运行完成，容器不退出。
 ```
 
 把dockerfile生成镜像文件：
 
 ```text
-docker build . -t nginx-exporter:v0.1
+docker build . -t nginx-exporter:v0.2
 ```
 
 运行容器：
 
 ```text
-docker run --name exporter1 -d -p 9113:9113 nginx-exporter:v0.1
+docker run --name exporter2 -d -p 9113:9113 nginx-exporter:v0.2
 ```
 
-访问`127.0.0.1:9113/metrics`检查exporter运作情况：
+访问`宿主机:9113/metrics`检查exporter运作情况：
 
-```text
-curl 127.0.0.1:9113/metrics
-# HELP nginx_connections_accepted Accepted client connections
-# TYPE nginx_connections_accepted counter
-nginx_connections_accepted 2
-# HELP nginx_connections_active Active client connections
-# TYPE nginx_connections_active gauge
-nginx_connections_active 1
-# HELP nginx_connections_handled Handled client connections
-# TYPE nginx_connections_handled counter
-nginx_connections_handled 2
-# HELP nginx_connections_reading Connections where NGINX is reading the request header
-# TYPE nginx_connections_reading gauge
-nginx_connections_reading 0
-# HELP nginx_connections_waiting Idle client connections
-# TYPE nginx_connections_waiting gauge
-nginx_connections_waiting 0
-# HELP nginx_connections_writing Connections where NGINX is writing the response back to the client
-# TYPE nginx_connections_writing gauge
-nginx_connections_writing 1
-# HELP nginx_http_requests_total Total http requests
-# TYPE nginx_http_requests_total counter
-nginx_http_requests_total 2
-# HELP nginx_up Status of the last metric scrape
-# TYPE nginx_up gauge
-nginx_up 1
-# HELP nginxexporter_build_info Exporter build information
-# TYPE nginxexporter_build_info gauge
-nginxexporter_build_info{gitCommit="a2910f1",version="0.7.0"} 1
-```
+![](../.gitbook/assets/image%20%287%29.png)
 
 参考资料：[https://github.com/nginxinc/nginx-prometheus-exporter](https://github.com/nginxinc/nginx-prometheus-exporter)
 

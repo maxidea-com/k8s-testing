@@ -6,7 +6,7 @@
 
 2）配置Prometheus对指标进行收集（镜像[https://hub.docker.com/r/prom/prometheus](https://hub.docker.com/r/prom/prometheus)）
 
-3）配置Grafana对指标进行展示（镜像
+3）配置Grafana对指标进行展示（镜像[https://hub.docker.com/r/grafana/grafana](https://hub.docker.com/r/grafana/grafana)）
 
 ## **测试1：配置Prometheus对指标进行收集**
 
@@ -37,6 +37,39 @@ docker run --name prometheus1 -d -p 9090:9090 -v /simon-testing/docker/compose/p
 ![](../.gitbook/assets/image%20%281%29.png)
 
 ## 测试2：配置Grafana对指标进行展示
+
+**1）准备dashboard.json**
+
+首先我们需要定制一个适合展示prometheus收集回来的nginx的指标参数的dashboards仪表板模板，最快的方式是上官网的选择现成的，例如[https://grafana.com/grafana/dashboards/9516](https://grafana.com/grafana/dashboards/9516)
+
+```text
+wget -c https://grafana.com/api/dashboards/9516/revisions/3/download -O dashboard.json
+```
+
+**2）准备provisioning文件**
+
+参考：[https://grafana.com/docs/grafana/latest/administration/provisioning/](https://grafana.com/docs/grafana/latest/administration/provisioning/)
+
+2-1）定义存放dashboard模板的目录
+
+创建一个dashboard.yaml文件：
+
+```text
+apiVersion: 1
+
+providers:
+- name: 'nginx'
+  orgId: 1
+  folder: 'dashboard1'
+  folderUid: ''
+  type: file
+  disableDeletion: false
+  editable: true
+  updateIntervalSeconds: 10
+  allowUiUpdates: false
+  options:
+    path: /var/lib/grafana/dashboards
+```
 
 
 

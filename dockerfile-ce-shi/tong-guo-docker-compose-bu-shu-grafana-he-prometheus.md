@@ -56,7 +56,7 @@ services:
     networks:
       webnet:
         aliases:
-        - "nginx"
+        - "nginx_exporter"
     expose:
     - "9113"
     ports:

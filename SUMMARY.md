@@ -31,5 +31,8 @@
 * [通过nginx-prometheus-exporter监控nginx指标](prometheus-he-grafana-de-dan-ji-bian-pai/tong-guo-nginxprometheusexporter-jian-kong-nginx.md)
 * [通过Grafana展示nginx容器指标](prometheus-he-grafana-de-dan-ji-bian-pai/tong-guo-grafana-zhan-shi-nginx-rong-qi-zhi-biao.md)
 * [通过docker compose部署Grafana和Prometheus](prometheus-he-grafana-de-dan-ji-bian-pai/tong-guo-docker-compose-bu-shu-grafana-he-prometheus.md)
-* [Untitled](prometheus-he-grafana-de-dan-ji-bian-pai/untitled.md)
+
+## EFK单机编排
+
+* [Filebeat收集nginx容器日志](efk-dan-ji-bian-pai/filebeat-shou-ji-nginx-rong-qi-ri-zhi.md)
 

@@ -8,9 +8,11 @@ description: 'https://hub.docker.com/r/nginx/nginx-prometheus-exporter'
 
 对于nginx-prometheus-exporter说明，请见这里：[https://github.com/nginxinc/nginx-prometheus-exporter](https://github.com/nginxinc/nginx-prometheus-exporter)
 
-**测试方式，通过多阶段部署，把nginx:alpine镜像合入nginx/nginx-prometheus-exporter中的程序，并使用脚本同时启动二者，注意让nginx运行于前台，且nginx-prometheus-exporter程序能正常输出nginx的指标。**
+**测试目标：**
 
-## 步骤1：
+**利用多阶段部署方式，把nginx:alpine镜像合入nginx/nginx-prometheus-exporter中的程序，并使用脚本同时启动二者，注意让nginx运行于前台，且nginx-prometheus-exporter程序能正常输出nginx的指标。**
+
+## 步骤1：设置nginx的stub\_status
 
 下载测试到用到镜像：
 
@@ -66,7 +68,7 @@ while true ; do curl 172.17.0.5:8080/stub_status; sleep 2; done
 docker cp nginx1:/etc/nginx/conf.d/status.conf ./
 ```
 
-## 步骤2：
+## 步骤2：部署nginx-prometheus-exporter容器
 
 通过nginx-prometheus-exporter容器来监控nginx1的指标，命令如下：
 

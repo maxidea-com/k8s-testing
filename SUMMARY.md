@@ -25,7 +25,11 @@
 
 * [Dockerfile入门](dockerfile-ce-shi/dockerfile-ru-men.md)
 * [Dockerfile多阶段构建](dockerfile-ce-shi/dockerfile-duo-jie-duan-gou-jian.md)
-* [通过nginx-prometheus-exporter监控nginx指标](dockerfile-ce-shi/tong-guo-nginxprometheusexporter-jian-kong-nginx.md)
-* [通过Grafana展示nginx容器指标](dockerfile-ce-shi/tong-guo-grafana-zhan-shi-nginx-rong-qi-zhi-biao.md)
-* [通过docker compose部署Grafana和Prometheus](dockerfile-ce-shi/tong-guo-docker-compose-bu-shu-grafana-he-prometheus.md)
+
+## Prometheus和Grafana的单机编排
+
+* [通过nginx-prometheus-exporter监控nginx指标](prometheus-he-grafana-de-dan-ji-bian-pai/tong-guo-nginxprometheusexporter-jian-kong-nginx.md)
+* [通过Grafana展示nginx容器指标](prometheus-he-grafana-de-dan-ji-bian-pai/tong-guo-grafana-zhan-shi-nginx-rong-qi-zhi-biao.md)
+* [通过docker compose部署Grafana和Prometheus](prometheus-he-grafana-de-dan-ji-bian-pai/tong-guo-docker-compose-bu-shu-grafana-he-prometheus.md)
+* [Untitled](prometheus-he-grafana-de-dan-ji-bian-pai/untitled.md)
 

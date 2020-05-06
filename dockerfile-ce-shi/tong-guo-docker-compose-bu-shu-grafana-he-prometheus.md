@@ -44,3 +44,59 @@ docker stop $(docker ps -q)
 docker rm $(docker ps -aq)
 ```
 
+新建一个docker-compose.yaml文件：
+
+```text
+version: '1'
+  
+services:
+
+  nginx:
+    image: nginx-exporter:v0.2
+    networks:
+      webnet:
+        aliases:
+        - "nginx"
+    expose:
+    - "9113"
+    ports:
+    - "9113:9113"
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+    - ./prometheus/prometheus-compose.yml:/etc/prometheus/prometheus.yml
+    networks:
+      webnet:
+        aliases:
+        - "wordpress"
+    expose:
+    - "9090"
+    ports:
+    - "9090:9090"
+    depends_on:
+    - nginx
+
+  grafana:
+    image: grafana/grafana
+    volumes:
+    - ./grafana/dashboards/dashboard.json:/var/lib/grafana/dashboards/dashboard.json
+    - ./grafana/provisioning/dashboard.yaml:/etc/grafana/provisioning/dashboards/dashboard.yaml
+    - ./grafana/provisioning/datasource-compose.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
+    networks:
+      webnet:
+        aliases:
+        - "grafana"
+    expose:
+    - "3000"
+    ports:
+    - "3000:3000"
+    depends_on:
+    - prometheus
+
+networks:
+  webnet: {}
+```
+
+
+

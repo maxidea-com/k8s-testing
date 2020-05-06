@@ -47,7 +47,7 @@ docker rm $(docker ps -aq)
 新建一个docker-compose.yaml文件：
 
 ```text
-version: '1'
+version: '3'
   
 services:
 
@@ -69,7 +69,7 @@ services:
     networks:
       webnet:
         aliases:
-        - "wordpress"
+        - "prometheus"
     expose:
     - "9090"
     ports:
@@ -98,5 +98,5 @@ networks:
   webnet: {}
 ```
 
-
+然后使用`docker-compose up -d`命令运行起来
 

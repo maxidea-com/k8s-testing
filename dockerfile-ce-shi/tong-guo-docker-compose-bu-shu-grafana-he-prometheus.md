@@ -98,5 +98,5 @@ networks:
   webnet: {}
 ```
 
-然后使用`docker-compose up -d`命令运行起来
+然后使用`docker-compose up -d`命令运行起来，之后访问宿主机3000端口即可获取grafana界面。
 

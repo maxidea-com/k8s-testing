@@ -33,7 +33,7 @@ scrape_configs:
 启动Prometheus容器：
 
 ```text
-docker run --name prometheus1 -d -p 9090:9090 -v /simon-testing/docker/compose/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
+docker run --name prometheus1 -d -p 9090:9090 -v $(pwd)/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
 ```
 
 然后访问宿主机 http://192.168.2.31:9090/targets，获得如下界面即代表Prometheus和Nginx指标均可获取：
@@ -512,9 +512,9 @@ datasources:
 
 ```text
 docker run -d --name=grafana1 \
--v /simon-testing/docker/compose/grafana/dashboards/dashboard.json:/var/lib/grafana/dashboards/dashboard.json \
--v /simon-testing/docker/compose/grafana/provisioning/dashboard.yaml:/etc/grafana/provisioning/dashboards/dashboard.yaml \
--v /simon-testing/docker/compose/grafana/provisioning/datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml \
+-v $(pwd)/grafana/dashboards/dashboard.json:/var/lib/grafana/dashboards/dashboard.json \
+-v $(pwd)/grafana/provisioning/dashboard.yaml:/etc/grafana/provisioning/dashboards/dashboard.yaml \
+-v $(pwd)/grafana/provisioning/datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml \
 -p 3000:3000 grafana/grafana
 ```
 

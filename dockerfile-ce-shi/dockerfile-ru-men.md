@@ -125,7 +125,7 @@ Successfully tagged demoapp:v0.1
 然后打开另一个terminal，查看一下容器ip地址，并用curl访问容器80端口：
 
 ```text
-root@09-1:/simon-testing/dockerfile# docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' myapp
+# docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' myapp
 172.17.0.2
 root@09-1:curl 172.17.0.2
 ClientIP: 172.17.0.1, ServerName: 48bcba8c4858, ServerIP: 172.17.0.2!

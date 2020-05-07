@@ -18,7 +18,7 @@ MYSQL_RANDOM_ROOT_PASSWORD=1
 然后启动mysql容器：
 
 ```text
-docker run --name db -d --net net1 -v /simon-testing/wordpress/db/data:/var/lib/mysql --env-file ./db/env.list mysql:5.7
+docker run --name db -d --net net1 -v $(pwd)/db/data:/var/lib/mysql --env-file ./db/env.list mysql:5.7
 ```
 
 mysql跑起来了：
@@ -83,7 +83,7 @@ server {
 然后运行nginx容器，link到wp容器，并把宿主机80端口与nginx容器80端口绑定：
 
 ```text
-docker run --name nginx -d -v /simon-testing/wordpress/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro --link wp --net net1 -p 80:80 nginx:alpine
+docker run --name nginx -d -v $(pwd)/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro --link wp --net net1 -p 80:80 nginx:alpine
 ```
 
 三个容器一起运行中：

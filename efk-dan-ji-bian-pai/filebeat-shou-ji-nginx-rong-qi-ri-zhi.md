@@ -20,7 +20,7 @@ Filebeat是一个用于转发和集中日志数据的轻量级传送程序。作
 curl -L -O https://raw.githubusercontent.com/elastic/beats/7.6/deploy/docker/filebeat.docker.yml
 ```
 
-文件内容：
+filebeat.docker.yml文件内容：
 
 ```text
 filebeat.config:

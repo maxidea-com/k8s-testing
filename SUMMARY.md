@@ -34,5 +34,5 @@
 
 ## EFK单机编排
 
-* [Filebeat收集nginx容器日志](efk-dan-ji-bian-pai/filebeat-shou-ji-nginx-rong-qi-ri-zhi.md)
+* [Filebeat收集nginx容器日志并同步到Elastic Cloud](efk-dan-ji-bian-pai/filebeat-shou-ji-nginx-rong-qi-ri-zhi.md)
 

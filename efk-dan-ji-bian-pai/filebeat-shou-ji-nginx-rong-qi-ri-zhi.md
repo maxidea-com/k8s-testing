@@ -2,7 +2,7 @@
 description: 'https://www.elastic.co/guide/en/beats/filebeat/'
 ---
 
-# Filebeat收集nginx容器日志
+# Filebeat收集nginx容器日志并同步到Elastic Cloud
 
 Filebeat是一个用于转发和集中日志数据的轻量级传送程序。作为代理安装在服务器上，Filebeat监视指定的日志文件或位置，收集日志事件，并将它们转发到Elasticsearch或Logstash进行索引。
 
@@ -14,7 +14,7 @@ Filebeat是一个用于转发和集中日志数据的轻量级传送程序。作
 
 `docker pull store/elastic/filebeat:7.6.2`
 
-下载官方的配置文件进行修改
+下载官方的配置文件：
 
 ```text
 curl -L -O https://raw.githubusercontent.com/elastic/beats/7.6/deploy/docker/filebeat.docker.yml
@@ -42,7 +42,7 @@ output.elasticsearch:
   password: '${ELASTICSEARCH_PASSWORD:}'
 ```
 
-把`filebeat.docker.yml`文件配置为基于应用于容器的`docker label`来部署Beats模块，filebeat就能使用自动发现功能，这里我们设置nginx容器的label为`co.elastic.logs/enabled`
+`filebeat.docker.yml`文件配置默认为基于应用于容器的`docker label`来部署Beats模块，filebeat就能使用自动发现功能，所以我们启动nginx容器时需要加上label：
 
 ```text
 docker run \
@@ -69,18 +69,18 @@ docker run -d \
   -E cloud.auth=elastic:<elastic password>
 ```
 
-由于我们还没有本地配置ElasticSearch，所以把参数`-E output.elasticsearch.hosts=["elasticsearch:9200"]`暂时使用Elastic Cloud提供的Elasticsearch Service的代替，上面的用户名和密码请以你自己的Elastic Cloud代替。例如：
+这里由于我们还没有本地配置ElasticSearch，所以把参数`-E output.elasticsearch.hosts=["elasticsearch:9200"]`改掉，暂时使用Elastic Cloud提供的Elasticsearch Service的代替，上面的用户名和密码请以你自己的Elastic Cloud代替。例如：
 
 ```text
 docker run -d \
->   --name=filebeat \
->   --user=root \
->   --volume="$(pwd)/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro" \
->   --volume="/var/lib/docker/containers:/var/lib/docker/containers:ro" \
->   --volume="/var/run/docker.sock:/var/run/docker.sock:ro" \
->   store/elastic/filebeat:7.6.2 filebeat -e -strict.perms=false \
->   -E cloud.id=nginx-simon1:c291dGhlYXN0YXNpYS5henVyZS5lbGFzdGljLWNsb3VkLmNvbTo5MjQzJDgzMjZkYTcyMDRkNDQzODA4YzkyYjMzOTEwNzc0MjIzJGZlYzAyYzQ3NDI0NDQ4YjM5MWRlNGI5MjI5NTY2MThk \
->   -E cloud.auth=elastic:HT0QWmB7yvJK4xjLgIs59Ruo
+   --name=filebeat \
+   --user=root \
+   --volume="$(pwd)/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro" \
+   --volume="/var/lib/docker/containers:/var/lib/docker/containers:ro" \
+   --volume="/var/run/docker.sock:/var/run/docker.sock:ro" \
+   store/elastic/filebeat:7.6.2 filebeat -e -strict.perms=false \
+   -E cloud.id=nginx-simon1:c291dGhlYXN0YXNpYS5henVyZS5lbGFzdGljLWNsb3VkLmNvbTo5MjQzJDgzMjZkYTcyMDRkNDQzODA4YzkyYjMzOTEwNzc0MjIzJGZlYzAyYzQ3NDI0NDQ4YjM5MWRlNGI5MjI5NTY2MThk \
+   -E cloud.auth=elastic:HT0QWmB7yvJK4xjLgIs59Ruo
 ```
 
 确保nginx和filebeat两个容器都启动后，我们刷一下本地80端口访问量，然后打开Elastic Cloud上的Kibana--&gt;Logs，能获取到nginx访问日志即代表配置正确：

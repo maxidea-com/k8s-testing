@@ -52,7 +52,7 @@ docker run --name wp -p 8080:80 --net net1 -d --env-file ./wp/env.list wordpress
 
 之后，在其他主机上用浏览器访问宿主机的8080端口，就能看到wordpress的安装引导界面了：
 
-![](../.gitbook/assets/image%20%2812%29.png)
+![](../.gitbook/assets/image%20%2813%29.png)
 
 ## 步骤3：配置nginx反向代理容器
 

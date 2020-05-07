@@ -1,8 +1,10 @@
 # 通过docker compose部署Grafana和Prometheus
 
+**目标:**
+
 基于我们之前制作的nginx-exporter:v0.2镜像，我们使用docker compose编排文件实现一次性部署Prometheus和Grafana
 
-与前面拆分成三个容器的部署不一样的地方是，我们这里需要修改一下Prometheus和Grafana配置里的数据源地址。
+与前面手工部署三个容器不一样的地方是，我们这里需要修改一下Prometheus和Grafana配置里的数据源地址。
 
 ```text
 #more prometheus-compose.yml 

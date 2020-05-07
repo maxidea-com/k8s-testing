@@ -1,8 +1,10 @@
 # 通过Grafana展示nginx容器指标
 
+**目标**
+
 本测试由三部分组成：
 
-1）Nginx指标收集，由nginx-prometheus-exporter转化为prometheus可以处理的指标格式，这部分我们上一节已经完成，本节将复用我们做好的nginx-exporter:v0.2镜像。
+1）Nginx指标收集，由nginx-prometheus-exporter转化为prometheus可以处理的指标格式，这部分我们上一节已经完成，本节将复用我们做好的`nginx-exporter:v0.2`镜像。
 
 2）配置Prometheus对指标进行收集（镜像[https://hub.docker.com/r/prom/prometheus](https://hub.docker.com/r/prom/prometheus)）
 
@@ -36,7 +38,7 @@ docker run --name prometheus1 -d -p 9090:9090 -v /simon-testing/docker/compose/p
 
 然后访问宿主机 http://192.168.2.31:9090/targets，获得如下界面即代表Prometheus和Nginx指标均可获取：
 
-![](../.gitbook/assets/image%20%286%29.png)
+![](../.gitbook/assets/image%20%287%29.png)
 
 ![&#x4F7F;&#x7528;Nginx&#x6307;&#x6807;&#x540D;&#x79F0;&#x80FD;&#x5728;Prometheus&#x7ED8;&#x5236;&#x51FA;&#x7B80;&#x5355;&#x56FE;&#x8868;](../.gitbook/assets/image%20%281%29.png)
 
@@ -527,5 +529,5 @@ CONTAINER ID        IMAGE                 COMMAND                  CREATED      
 
 访问宿主机3000端口，打开Grafana，正常可以看到如下仪表板：
 
-![](../.gitbook/assets/image%20%285%29.png)
+![](../.gitbook/assets/image%20%286%29.png)
 

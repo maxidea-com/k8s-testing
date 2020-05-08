@@ -35,4 +35,6 @@
 ## EFK单机编排
 
 * [Filebeat收集nginx容器日志并同步到Elastic Cloud](efk-dan-ji-bian-pai/filebeat-shou-ji-nginx-rong-qi-ri-zhi.md)
+* [通过docker部署单节点的Elasticsearch，并定制Kibana的面板](efk-dan-ji-bian-pai/tong-guo-docker-bu-shu-dan-jie-dian-de-elasticsearch-bing-ding-zhi-kibana-de-mian-ban.md)
+* [通过docker compose部署EFK](efk-dan-ji-bian-pai/tong-guo-docker-compose-bu-shu-efk.md)
 

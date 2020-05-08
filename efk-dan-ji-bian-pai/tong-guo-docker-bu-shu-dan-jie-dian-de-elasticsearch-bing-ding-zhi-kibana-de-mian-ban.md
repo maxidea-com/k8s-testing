@@ -1,4 +1,4 @@
-# 通过docker部署单节点的Elasticsearch，并定制Kibana的面板
+# 通过docker部署Elasticsearch并定制Kibana的面板
 
 **目标：**
 

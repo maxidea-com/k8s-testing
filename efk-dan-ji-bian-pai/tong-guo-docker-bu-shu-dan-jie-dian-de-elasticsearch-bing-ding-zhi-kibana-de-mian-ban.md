@@ -1,6 +1,8 @@
 # 通过docker部署单节点的Elasticsearch，并定制Kibana的面板
 
-**目标：使用单节点的Elasticsearch+Kibana，替代上一节使用的Elastic Cloud Service. 并使用Kibana定制一个Dashboard。**
+**目标：**
+
+**使用单节点的Elasticsearch+Kibana，替代上一节使用的Elastic Cloud Service. 并使用Kibana定制一个Dashboard。**
 
 使用到的镜像：
 

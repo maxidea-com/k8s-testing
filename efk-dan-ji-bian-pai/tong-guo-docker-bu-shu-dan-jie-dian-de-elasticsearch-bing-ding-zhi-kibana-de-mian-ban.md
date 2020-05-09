@@ -1,4 +1,4 @@
-# 通过docker部署Elasticsearch并定制Kibana的面板
+# 通过docker部署Elasticsearch并定制Kibana的Dashboard
 
 **目标：**
 
@@ -10,7 +10,7 @@
 
 `docker pull kibana:7.6.2`
 
-**1）运行elasticsearch单节点容器：**
+**1）运行Elasticsearch单节点容器：**
 
 ```text
 docker run -d --name elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:7.6.2
@@ -20,7 +20,7 @@ docker run -d --name elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=
 
 9300端口是ES节点之间通讯使用的端口，它是tcp协议通讯，集群间和TCPclient都走的它，jar之间就是通过tcp协议通讯。
 
-**2）运行一个新的filebeat容器，output指定本地9200端口：**
+**2）运行一个新的Filebeat容器，output指定本地9200端口：**
 
 ```text
 docker run -d \
@@ -35,7 +35,7 @@ docker run -d \
 
 其中filebeat.docker.yml文件沿用我们上一节默认配置即可。
 
-**3）检查一下elasticsearch节点的运行情况：**
+**3）检查一下Elasticsearch节点的运行情况：**
 
 ```text
 #curl -X GET "localhost:9200/_cat/nodes?v&pretty"

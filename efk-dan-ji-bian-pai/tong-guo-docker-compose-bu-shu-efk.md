@@ -14,11 +14,108 @@ Docker Compose文件里将创建两个节点的Elasticsearch集群。节点es01�
 
 volumes data01和data02是的Docker存储节点数据目录，以便数据在重新启动时保持不变。如果它们不存在，docker compose会在您启动集群时创建它们（如果不指定位置，默认位于/var/lib/docker/volumes/目录下）。
 
+docker-compose.yml文件如下：
 
+```text
+version: '3'
+services:
+  es01:
+    image: elasticsearch:7.6.2
+    container_name: es01
+    environment:
+      - node.name=es01
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es02
+      - cluster.initial_master_nodes=es01,es02
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - elastic
+  es02:
+    image: elasticsearch:7.6.2
+    container_name: es02
+    environment:
+      - node.name=es02
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es01
+      - cluster.initial_master_nodes=es01,es02
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data02:/usr/share/elasticsearch/data
+    networks:
+      - elastic
+  filebeat:
+    image: store/elastic/filebeat:7.6.2
+    container_name: filebeat
+    user: root
+    environment:
+      - strict.perms=false
+      - output.elasticsearch.hosts=["es1:9200"]
+    volumes:
+      - ./filebeat.docker-compose.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - elastic
+    depends_on:
+      - es01  
+  kibana:
+    image: kibana:7.6.2
+    container_name: kibana
+    environment:
+      ELASTICSEARCH_HOSTS: http://es01:9200
+    networks:
+      - elastic
+    expose:
+      - "5601"
+    ports:
+      - "5601:5601"
+    depends_on:
+      - es01
 
+volumes:
+  data01:
+    driver: local
+  data02:
+    driver: local
 
+networks:
+  elastic:
+    driver: bridge
+```
 
+filebeat.docker-compose.yml文件内容：
 
+```text
+filebeat.config:
+  modules:
+    path: ${path.config}/modules.d/*.yml
+    reload.enabled: false
+
+filebeat.autodiscover:
+  providers:
+    - type: docker
+      hints.enabled: true
+
+processors:
+- add_cloud_metadata: ~
+
+output.elasticsearch:
+  hosts: '${ELASTICSEARCH_HOSTS:es01:9200}'
+```
 
 常见问题：
 

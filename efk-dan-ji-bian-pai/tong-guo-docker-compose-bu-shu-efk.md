@@ -8,7 +8,7 @@
 
 `docker pull kibana:7.6.2`
 
-这里提高一下难度，ElasticSearch使用双节点部署。
+为了更好理解docker编排文件下filebeat和kibana的配置方法，这里的Elasticsearch使用双节点部署。实际生产环境不会这样配置Elasticsearch集群。（官方的集群样例，请参考这里：[https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html)）
 
 Docker Compose文件里将创建两个节点的Elasticsearch集群。节点es01在本地主机上侦听9200端口，es02通过Docker网络与es01对话。
 

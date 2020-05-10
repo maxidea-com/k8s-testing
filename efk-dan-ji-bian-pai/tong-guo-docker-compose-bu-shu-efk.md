@@ -10,9 +10,9 @@
 
 为了更好理解docker编排文件下filebeat和kibana的配置方法，这里的Elasticsearch使用双节点部署。实际生产环境不会这样配置Elasticsearch集群。（官方的集群样例，请参考这里：[https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html)）
 
-Docker Compose文件里将创建两个节点的Elasticsearch集群。节点es01在本地主机上侦听9200端口，es02通过Docker网络与es01对话。
+Docker Compose文件里创建两个节点的Elasticsearch集群。节点es01在本地主机上侦听9200端口，es02通过Docker网络与es01对话。
 
-volumes data01和data02是的Docker存储节点数据目录，以便数据在重新启动时保持不变。如果它们不存在，docker compose会在您启动集群时创建它们（如果不指定位置，默认位于/var/lib/docker/volumes/目录下）。
+volumes data01和data02是的Docker存储节点数据目录，以便数据在重新启动时保持不变。如果目录不存在，docker compose会在您启动集群时创建它们（如果不指定位置，默认位于/var/lib/docker/volumes/目录下）。
 
 docker-compose.yml文件如下：
 

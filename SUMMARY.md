@@ -39,3 +39,7 @@
 * [通过docker部署Elasticsearch并定制Kibana的Dashboard](efk-dan-ji-bian-pai/tong-guo-docker-bu-shu-dan-jie-dian-de-elasticsearch-bing-ding-zhi-kibana-de-mian-ban.md)
 * [通过docker compose部署EFK](efk-dan-ji-bian-pai/tong-guo-docker-compose-bu-shu-efk.md)
 
+## Kubernetes基础
+
+* [Kubernetes基础知识](kubernetes-ji-chu/kubernetes-ji-chu-zhi-shi.md)
+

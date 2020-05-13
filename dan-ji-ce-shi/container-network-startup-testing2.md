@@ -56,7 +56,7 @@ Commercial support is available at
 
 但是这个nginx在宿主机以外是无法访问的，关于docker内置支持的四种网络类型，可以参考这张图：
 
-![docker&#x5185;&#x7F6E;&#x652F;&#x6301;&#x7684;&#x56DB;&#x79CD;&#x7F51;&#x7EDC;&#x7C7B;&#x578B;](../.gitbook/assets/image%20%288%29.png)
+![docker&#x5185;&#x7F6E;&#x652F;&#x6301;&#x7684;&#x56DB;&#x79CD;&#x7F51;&#x7EDC;&#x7C7B;&#x578B;](../.gitbook/assets/image%20%289%29.png)
 
 所以，要实现跨宿主机的网络访问，首先要把容器的端口暴露在宿主机的网络接口上，原理与路由器上的NAT类似。通过增加参数 `-p [宿主端口]:[容器端口]` 实现，例如：
 

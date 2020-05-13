@@ -37,5 +37,5 @@ latest: digest: sha256:1186c737e9c302ca82489a12ab4ea810396e75b49939f047fca76d2cf
 
 刷新docker hub个人页面，就能看到这个镜像了：
 
-![](../.gitbook/assets/image%20%2826%29.png)
+![](../.gitbook/assets/image%20%2827%29.png)
 

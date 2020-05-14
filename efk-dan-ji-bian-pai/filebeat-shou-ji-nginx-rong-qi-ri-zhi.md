@@ -6,7 +6,7 @@ description: 'https://www.elastic.co/guide/en/beats/filebeat/'
 
 Filebeat是一个用于转发和集中日志数据的轻量级传送程序。作为代理安装在服务器上，Filebeat监视指定的日志文件或位置，收集日志事件，并将它们转发到Elasticsearch或Logstash进行索引。
 
-![Filebeat&#x7684;&#x5DE5;&#x4F5C;&#x539F;&#x7406;](../.gitbook/assets/image%20%2813%29.png)
+![Filebeat&#x7684;&#x5DE5;&#x4F5C;&#x539F;&#x7406;](../.gitbook/assets/image%20%2814%29.png)
 
 注意：由于官方docker.elastic.co的国内访问速度很慢，所以我们直接用已经有加速的dockerhub仓库地址。
 
@@ -85,7 +85,7 @@ docker run -d \
 
 确保nginx和filebeat两个容器都启动后，我们刷一下本地80端口访问量，然后打开Elastic Cloud上的Kibana--&gt;Logs，能获取到nginx访问日志即代表配置正确：
 
-![](../.gitbook/assets/image%20%287%29.png)
+![](../.gitbook/assets/image%20%288%29.png)
 
 
 
@@ -101,7 +101,7 @@ Elastic Cloud是收费的SAAS服务，[https://www.elastic.co/](https://www.elas
 
 4）点击Deploy后云端会自动开始准备环境，页面上会提示Save your Elasticsearch and Kibana password。大约三分钟后可以使用。
 
-![](../.gitbook/assets/image%20%2824%29.png)
+![](../.gitbook/assets/image%20%2825%29.png)
 
 5）点击左上角Deployment的名字，在页面上获取对应的cloud ID
 

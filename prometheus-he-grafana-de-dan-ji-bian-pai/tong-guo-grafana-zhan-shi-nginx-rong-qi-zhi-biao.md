@@ -38,7 +38,7 @@ docker run --name prometheus1 -d -p 9090:9090 -v $(pwd)/prometheus/prometheus.ym
 
 然后访问宿主机 http://192.168.2.31:9090/targets，获得如下界面即代表Prometheus和Nginx指标均可获取：
 
-![](../.gitbook/assets/image%20%2815%29.png)
+![](../.gitbook/assets/image%20%2816%29.png)
 
 ![&#x4F7F;&#x7528;Nginx&#x6307;&#x6807;&#x540D;&#x79F0;&#x80FD;&#x5728;Prometheus&#x7ED8;&#x5236;&#x51FA;&#x7B80;&#x5355;&#x56FE;&#x8868;](../.gitbook/assets/image%20%285%29.png)
 
@@ -529,5 +529,5 @@ CONTAINER ID        IMAGE                 COMMAND                  CREATED      
 
 访问宿主机3000端口，打开Grafana，正常可以看到如下仪表板：
 
-![](../.gitbook/assets/image%20%2814%29.png)
+![](../.gitbook/assets/image%20%2815%29.png)
 

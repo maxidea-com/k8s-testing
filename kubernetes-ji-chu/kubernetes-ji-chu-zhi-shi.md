@@ -8,7 +8,7 @@ Kubernetes（发音 \[kubə'netis\]）简称K8s，它是一个能够跨主机进
 
 Kubernetes的架构图如下：
 
-![ a high-level diagram of the architecture&#xFF08;from https://x-team.com/blog/introduction-kubernetes-architecture/&#xFF09;](../.gitbook/assets/image%20%2812%29.png)
+![ a high-level diagram of the architecture&#xFF08;from https://x-team.com/blog/introduction-kubernetes-architecture/&#xFF09;](../.gitbook/assets/image%20%2813%29.png)
 
 ### Master Node（主节点，控制平面） <a id="masternode"></a>
 
@@ -36,6 +36,8 @@ Kubernetes的架构图如下：
 
 `kubelet` 是`API server`的客户端，负责与主节点之间的通信。它还与`etcd`通信，获取有关服务的信息，并编写有关新创建的服务的详细信息。`kubelet`通过`CRI(Container RunTime Interface)`接口与本地的`container runtime`进行交互，来调用runtime来运行`Pod`。`kubelet`通过`CNI(Container Network Interface)`接口与`Network Plugins`进行交互，为每个Pod初始化网络、生成IP地址（Pod网络）。  
 另外，存储卷通过`CSI(Container Storage Interface)`接口与`Storage Device` 对外部存储系统进行交互。
+
+![network diagram by Lucas K&#xE4;ldstr&#xF6;m &#xFF08;from https://kubernetes.io/blog/2018/07/18/11-ways-not-to-get-hacked/&#xFF09;](../.gitbook/assets/image%20%286%29.png)
 
 #### kube-proxy <a id="kubeproxy"></a>
 

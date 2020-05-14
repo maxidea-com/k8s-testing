@@ -55,7 +55,7 @@ docker run -d --name kibana --link elasticsearch:elasticsearch -p 5601:5601 kiba
 
 5-1）访问宿主机上的kibana（`http://宿主机ip:5601`），首次访问的话，选择INDEX PATTERN为filebeat-7.6.2-{日期}-000001，然后切换到logs页面下，即可获得nginx日志
 
-![](../.gitbook/assets/image%20%2822%29.png)
+![](../.gitbook/assets/image%20%2823%29.png)
 
 5-2）然后打开Visualize，创建一个基于Metrics-&gt;Count的计数器，点击Save保存为count。
 
@@ -63,7 +63,7 @@ docker run -d --name kibana --link elasticsearch:elasticsearch -p 5601:5601 kiba
 
 5-3）再次选择Visualize，创建一个基于data table状态码排行（Buckets-&gt;Split rows,  Aggregation-&gt; Terms, Field-&gt;http.respone.status\_code\) 并保存为status code
 
-![](../.gitbook/assets/image%20%2817%29.png)
+![](../.gitbook/assets/image%20%2818%29.png)
 
 5-4）再次选择Visualize，创建一个基于data table的请求来源地址排行（Buckets-&gt;Split rows,  Aggregation-&gt; Terms, Field-&gt;http.request.referrer\) 并保存为referrer。
 
@@ -79,5 +79,5 @@ docker run -d --name kibana --link elasticsearch:elasticsearch -p 5601:5601 kiba
 
 小技巧，如果要换成黑色主题，在Kibana的高级设置里把Dark mode打开即可。
 
-![](../.gitbook/assets/image%20%2825%29.png)
+![](../.gitbook/assets/image%20%2826%29.png)
 

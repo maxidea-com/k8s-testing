@@ -87,7 +87,7 @@ while true ; do curl -s -o /dev/null http://172.17.0.2/; sleep 1; done
 
 最后访问宿主机的IP:9113/metrics页面，就能看到读取出来的nginx指标数据了。
 
-![](../.gitbook/assets/image%20%2821%29.png)
+![](../.gitbook/assets/image%20%2822%29.png)
 
 
 
@@ -132,7 +132,7 @@ docker run --name exporter2 -d -p 9113:9113 nginx-exporter:v0.2
 
 访问`宿主机:9113/metrics`检查exporter运作情况：
 
-![](../.gitbook/assets/image%20%2820%29.png)
+![](../.gitbook/assets/image%20%2821%29.png)
 
 参考资料：[https://github.com/nginxinc/nginx-prometheus-exporter](https://github.com/nginxinc/nginx-prometheus-exporter)
 

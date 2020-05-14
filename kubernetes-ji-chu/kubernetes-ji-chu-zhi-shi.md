@@ -43,7 +43,7 @@ Kubernetes的架构图如下：
 
 #### kube-proxy <a id="kubeproxy"></a>
 
-`kube-proxy` 充当单个工作节点上服务的网络代理和负载平衡器。它负责TCP和UDP包的网络路由。管理创建service 
+`kube-proxy` 充当单个工作节点上服务的网络代理和负载平衡器。它负责TCP和UDP包的网络路由。监听POD并更新service VIP上的endpoints。
 
 #### kubectl <a id="kubectl"></a>
 
@@ -51,8 +51,13 @@ Kubernetes的架构图如下：
 
 ## Kubernetes解决了什么问题
 
+在Kubernetes集群中，它解决了传统IT系统中服务扩容和升级的两大难题。
+
 ![](../.gitbook/assets/k8s-jie-jue-de-wen-ti.png)
 
+K8s可以实现以下特点：  
+1）扩容和缩容（scaling）  
+2）负载均衡（load balance）  
 
 
 

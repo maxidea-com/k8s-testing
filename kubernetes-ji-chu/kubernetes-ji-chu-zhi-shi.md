@@ -10,7 +10,7 @@ Kubernetes（发音 \[kubə'netis\]）简称K8s，它是一个能够跨主机进
 
 Kubernetes的架构图如下：
 
-![ a high-level diagram of the architecture&#xFF08;from https://x-team.com/blog/introduction-kubernetes-architecture/&#xFF09;](../.gitbook/assets/image%20%2813%29.png)
+![ a high-level diagram of the architecture&#xFF08;from https://x-team.com/blog/introduction-kubernetes-architecture/&#xFF09;](../.gitbook/assets/image%20%2814%29.png)
 
 ### Master Node（主节点，控制平面） <a id="masternode"></a>
 
@@ -39,7 +39,7 @@ Kubernetes的架构图如下：
 `kubelet` 是`API server`的客户端，负责与主节点之间的通信。它还与`etcd`通信，获取有关服务的信息，并编写有关新创建的服务的详细信息。`kubelet`通过`CRI(Container RunTime Interface)`接口与本地的`container runtime`进行交互，来调用runtime来运行`Pod`。`kubelet`通过`CNI(Container Network Interface)`接口插件与`Network Plugins`进行交互，为每个Pod初始化网络、生成IP地址（Pod网络）。  
 另外，存储卷通过`CSI(Container Storage Interface)`接口与`Storage Device` 对外部存储系统进行交互。
 
-![network diagram by Lucas K&#xE4;ldstr&#xF6;m &#xFF08;from https://kubernetes.io/blog/2018/07/18/11-ways-not-to-get-hacked/&#xFF09;](../.gitbook/assets/image%20%286%29.png)
+![network diagram by Lucas K&#xE4;ldstr&#xF6;m &#xFF08;from https://kubernetes.io/blog/2018/07/18/11-ways-not-to-get-hacked/&#xFF09;](../.gitbook/assets/image%20%287%29.png)
 
 #### kube-proxy <a id="kubeproxy"></a>
 
@@ -55,10 +55,21 @@ Kubernetes的架构图如下：
 
 ![](../.gitbook/assets/k8s-jie-jue-de-wen-ti.png)
 
-  
+##  Kubernetes网络架构基础知识点
 
+Kubernetes网络的基本要求是（根据[https://kubernetes.io/docs/concepts/cluster-administration/networking/\#the-kubernetes-network-model](https://kubernetes.io/docs/concepts/cluster-administration/networking/#the-kubernetes-network-model)）
 
+1）所有容器都可以在没有NAT的情况下与所有其他容器通信  
+2）所有节点都可以在没有NAT的情况下与所有容器通信（反之亦然）  
+3）容器和容器之间的IP被视为同一内网  
+其中，容器也可以理解成Pod，因为它们都共享同一网络。
 
+![Flannel overlay network&#xFF08;https://blog.laputa.io/kubernetes-flannel-networking-6a1cb1f8ec7c&#xFF09;](../.gitbook/assets/image%20%284%29.png)
+
+因此，我们可以理解成K8s网络主要包括四种：  
+1）物理节点之间的节点网络，对应物理机的物理网卡  
+2）Pod之间通信用的Pod网络  
+2）Service网络，
 
 
 

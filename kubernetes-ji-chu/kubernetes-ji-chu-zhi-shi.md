@@ -66,10 +66,10 @@ Kubernetes网络的基本要求是（根据[https://kubernetes.io/docs/concepts/
 
 ![Flannel overlay network&#xFF08;https://blog.laputa.io/kubernetes-flannel-networking-6a1cb1f8ec7c&#xFF09;](../.gitbook/assets/image%20%284%29.png)
 
-因此，我们可以理解成K8s网络主要包括四种：  
+因此，我们可以理解成K8s网络主要包括三种：  
 1）物理节点之间的节点网络，对应物理机的物理网卡  
 2）Pod之间通信用的Pod网络  
-2）Service网络，
+2）Service网络，存在于iptables和ipvs规则当中，实现Pod之间通信、Pod与外部客户端之间的通信时作为流量的管理、整型、地址转换的组件使用。
 
 
 

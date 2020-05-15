@@ -36,7 +36,7 @@ Kubernetes的架构图如下：
 
 #### kubelet <a id="kubelet"></a>
 
-`kubelet` 是`API server`的客户端，负责与主节点之间的通信。它还与`etcd`通信，获取有关服务的信息，并编写有关新创建的服务的详细信息。`kubelet`通过`CRI(Container RunTime Interface)`接口与本地的`container runtime`进行交互，来调用runtime来运行`Pod`。`kubelet`通过`CNI(Container Network Interface)`接口与`Network Plugins`进行交互，为每个Pod初始化网络、生成IP地址（Pod网络）。  
+`kubelet` 是`API server`的客户端，负责与主节点之间的通信。它还与`etcd`通信，获取有关服务的信息，并编写有关新创建的服务的详细信息。`kubelet`通过`CRI(Container RunTime Interface)`接口与本地的`container runtime`进行交互，来调用runtime来运行`Pod`。`kubelet`通过`CNI(Container Network Interface)`接口插件与`Network Plugins`进行交互，为每个Pod初始化网络、生成IP地址（Pod网络）。  
 另外，存储卷通过`CSI(Container Storage Interface)`接口与`Storage Device` 对外部存储系统进行交互。
 
 ![network diagram by Lucas K&#xE4;ldstr&#xF6;m &#xFF08;from https://kubernetes.io/blog/2018/07/18/11-ways-not-to-get-hacked/&#xFF09;](../.gitbook/assets/image%20%286%29.png)
@@ -51,13 +51,11 @@ Kubernetes的架构图如下：
 
 ## Kubernetes解决了什么问题
 
-在Kubernetes集群中，它解决了传统IT系统中服务扩容和升级的两大难题。
+在Kubernetes集群中，它解决了传统IT系统中服务扩容和升级的两大难题，它能解决的问题包含如以下这些方面：
 
 ![](../.gitbook/assets/k8s-jie-jue-de-wen-ti.png)
 
-K8s可以实现以下特点：  
-1）扩容和缩容（scaling）  
-2）负载均衡（load balance）  
+  
 
 
 

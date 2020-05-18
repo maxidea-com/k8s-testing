@@ -161,7 +161,11 @@ apt-get update
 apt-get install -y kubelet kubeadm kubectl
 ```
 
+使用我预先准备好的一键部署脚本：
 
+```text
+sudo curl -s https://gitee.com/maxidea/shell/raw/master/k8s-install-init.sh | bash
+```
 
 
 

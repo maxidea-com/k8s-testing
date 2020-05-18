@@ -15,9 +15,10 @@
 | 31 | 192.168.2.31 | master31.maxidea.com |
 | 32 | 192.168.2.32 | master32.maxidea.com |
 | 33 | 192.168.2.33 | master33.maxidea.com |
-| 34 | 192.168.2.34 | node34.maxidea.com |
+| 34 | 跳板机 | 跳板机 |
 | 35 | 192.168.2.35 | node35.maxidea.com |
 | 36 | 192.168.2.36 | node36.maxidea.com |
+| 37 | 192.168.2.37 | node37.maxidea.com |
 
 #### 1-2）各节点时间同步
 
@@ -61,6 +62,7 @@ wait
 
 ```text
 $bash batch.sh date
+2020年 05月 17日 星期日 13:43:02 CST
 2020年 05月 17日 星期日 13:43:02 CST
 2020年 05月 17日 星期日 13:43:02 CST
 2020年 05月 17日 星期日 13:43:02 CST
@@ -128,16 +130,36 @@ cd /etc
 echo $sudoerpw | sudo -S bash -c "echo '192.168.2.31    master31.maxidea.com'>> hosts"
 echo $sudoerpw | sudo -S bash -c "echo '192.168.2.32    master32.maxidea.com'>> hosts"
 echo $sudoerpw | sudo -S bash -c "echo '192.168.2.33    master33.maxidea.com'>> hosts"
-echo $sudoerpw | sudo -S bash -c "echo '192.168.2.34    node34.maxidea.com'>> hosts"
 echo $sudoerpw | sudo -S bash -c "echo '192.168.2.35    node35.maxidea.com'>> hosts"
 echo $sudoerpw | sudo -S bash -c "echo '192.168.2.36    node36.maxidea.com'>> hosts"
+echo $sudoerpw | sudo -S bash -c "echo '192.168.2.37    node37.maxidea.com'>> hosts"
 rmssh
 done
 ```
 
+#### 1-6）各节点上安装docker
 
+使用我预先准备好的一键部署脚本：
 
+```text
+sudo curl -s https://gitee.com/maxidea/shell/raw/master/docker-install-k8s.sh | bash
+```
 
+### 2）Master节点初始化
+
+2-1）镜像设定
+
+使用阿里云镜像站：[https://developer.aliyun.com/mirror/kubernetes](https://developer.aliyun.com/mirror/kubernetes)
+
+```text
+apt-get update && apt-get install -y apt-transport-https
+curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | apt-key add - 
+cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
+deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
+EOF  
+apt-get update
+apt-get install -y kubelet kubeadm kubectl
+```
 
 
 

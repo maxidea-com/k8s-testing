@@ -42,4 +42,5 @@
 ## Kubernetes基础
 
 * [Kubernetes基础知识](kubernetes-ji-chu/kubernetes-ji-chu-zhi-shi.md)
+* [通过Kubeadm部署K8s集群](kubernetes-ji-chu/tong-guo-kubeadm-bu-shu.md)
 

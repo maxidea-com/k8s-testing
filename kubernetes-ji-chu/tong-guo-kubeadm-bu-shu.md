@@ -127,7 +127,7 @@ do
 echo "ssh to $server >>>"
 ssh -Tq ubuntu@$ipadd.$server >/dev/null <<rmssh
 cd /etc
-echo $sudoerpw | sudo -S bash -c "echo '192.168.2.31    master31.maxidea.com'>> hosts"
+echo $sudoerpw | sudo -S bash -c "echo '192.168.2.31    master31.maxidea.com    k8s-api.maxidea.com'>> hosts"
 echo $sudoerpw | sudo -S bash -c "echo '192.168.2.32    master32.maxidea.com'>> hosts"
 echo $sudoerpw | sudo -S bash -c "echo '192.168.2.33    master33.maxidea.com'>> hosts"
 echo $sudoerpw | sudo -S bash -c "echo '192.168.2.35    node35.maxidea.com'>> hosts"
@@ -167,7 +167,7 @@ apt-get install -y kubelet kubeadm kubectl
 sudo curl -s https://gitee.com/maxidea/shell/raw/master/k8s-install-init.sh | bash
 ```
 
-2-2）主节点初始化
+#### 2-2）主节点初始化
 
 由于网络原因，国内无法直接访问gcr.io，所以在kubeadm init时要指定参数，使用阿里云镜像：
 
@@ -177,15 +177,84 @@ kubeadm init  --image-repository=registry.aliyuncs.com/google_containers
 
 由于31节点同时用来做高可用集群的负载均衡器，所以要加上参数：
 
+```text
+--control-plane-endpoint k8s-api.maxidea.com 
+--apiserver-advertise-address 192.168.2.31 
+```
 
+pod网络默认用flannel的10.244.0.0./16：
 
+```text
+--pod-network-cidr 10.244.0.0/16
+```
 
+整条命令运行下来：
 
+```text
+$sudo kubeadm init \
+    --image-repository=registry.aliyuncs.com/google_containers \
+    --control-plane-endpoint k8s-api.maxidea.com \
+    --apiserver-advertise-address 192.168.2.31 \
+    --pod-network-cidr 10.244.0.0/16
 
+#省略执行过程#
 
+Your Kubernetes control-plane has initialized successfully!
 
+To start using your cluster, you need to run the following as a regular user:
 
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
+You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
 
+You can now join any number of control-plane nodes by copying certificate authorities
+and service account keys on each node and then running the following as root:
 
+  kubeadm join k8s-api.maxidea.com:6443 --token q9de5i.toeqluiwv9ij99o2 \
+    --discovery-token-ca-cert-hash sha256:2556bfaa0cb5a99771867b310eb00f38736736da33289d040a4e88c36d7d81af \
+    --control-plane 
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join k8s-api.maxidea.com:6443 --token q9de5i.toeqluiwv9ij99o2 \
+    --discovery-token-ca-cert-hash sha256:2556bfaa0cb5a99771867b310eb00f38736736da33289d040a4e88c36d7d81af         
+```
+
+#### 2-3）主节点其他配置
+
+接着按照上面提示执行三行命令（必须使用非root用户，我们默认使用系统ubuntu用户）：
+
+```text
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
+现在可以用kubectl查看节点状态：
+
+```text
+$ kubectl get nodes 
+NAME   STATUS     ROLES    AGE    VERSION
+31     NotReady   master   9m9s   v1.18.2
+```
+
+这里显示节点状态为NotReady，为探究竟，可以使用`kubectl describe node 31` 查看一下原因：
+
+```text
+Events:
+  Type    Reason                   Age   From            Message
+  ----    ------                   ----  ----            -------
+  Normal  Starting                 37m   kubelet, 31     Starting kubelet.
+  Normal  NodeHasSufficientMemory  37m   kubelet, 31     Node 31 status is now: NodeHasSufficientMemory
+  Normal  NodeHasNoDiskPressure    37m   kubelet, 31     Node 31 status is now: NodeHasNoDiskPressure
+  Normal  NodeHasSufficientPID     37m   kubelet, 31     Node 31 status is now: NodeHasSufficientPID
+  Normal  NodeAllocatableEnforced  37m   kubelet, 31     Updated Node Allocatable limit across pods
+  Normal  Starting                 37m   kube-proxy, 31  Starting kube-proxy.
+```
+
+显示“NodeHasSufficientMemory”，节点的内存不足，我们需要通过Esxi再分配更多内存给这台主机。
 

@@ -145,6 +145,12 @@ done
 sudo curl -s https://gitee.com/maxidea/shell/raw/master/docker-install-k8s.sh | bash
 ```
 
+#### 1-7）各节点上删除回环设备
+
+```text
+sudo apt autoremove --purge snapd
+```
+
 ### 2）节点初始化
 
 2-1）镜像设定
@@ -256,5 +262,80 @@ Events:
   Normal  Starting                 37m   kube-proxy, 31  Starting kube-proxy.
 ```
 
-显示“NodeHasSufficientMemory”，节点的内存不足，我们需要通过Esxi再分配更多内存给这台主机。
+显示“`NodeHasSufficientMemory`”，节点的内存不足，我们需要分配更多内存给这台主机。（分配完更多内存后还出现同样问题，则需要分析其他原因）
+
+如果出错信息里带有：
+
+```text
+runtime network not ready: NetworkReady=false reason:NetworkPluginNotReady message:docker: network plugin is not ready: cni config uninitialized
+```
+
+则表示CNI插件还没有运行起来，我们可以先把`flannel`安装完成，再回过头来处理其他错误信息。
+
+#### 2-4）主节点安装CNI（Flannel）
+
+根据[https://kubernetes.io/docs/concepts/cluster-administration/addons/](https://kubernetes.io/docs/concepts/cluster-administration/addons/)页面的提示，我们可以找到flannel的项目github地址[https://github.com/coreos/flannel](https://github.com/coreos/flannel) ，并且在README.md下可以看到这个提示：
+
+For Kubernetes v1.7+ `kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml`
+
+由于墙的原因，访问上述github的raw地址会经常出错，所以我们可以通过fork flannel项目的github然后再同步到国内自己的码云repo（具体方式请自行baidu），然后再通过码云的raw地址获取上面的配置清单文件。例如：[https://gitee.com/maxidea/flannel/raw/master/Documentation/kube-flannel.yml](https://gitee.com/maxidea/flannel/raw/master/Documentation/kube-flannel.yml)
+
+于是，安装命令改为：
+
+```text
+$ kubectl apply -f https://gitee.com/maxidea/flannel/raw/master/Documentation/kube-flannel.yml
+podsecuritypolicy.policy/psp.flannel.unprivileged created
+clusterrole.rbac.authorization.k8s.io/flannel created
+clusterrolebinding.rbac.authorization.k8s.io/flannel created
+serviceaccount/flannel created
+configmap/kube-flannel-cfg created
+daemonset.apps/kube-flannel-ds-amd64 created
+daemonset.apps/kube-flannel-ds-arm64 created
+daemonset.apps/kube-flannel-ds-arm created
+daemonset.apps/kube-flannel-ds-ppc64le created
+daemonset.apps/kube-flannel-ds-s390x created
+```
+
+验证一下是否跑起来了：
+
+```text
+$ kubectl get pod -n kube-system 
+NAME                          READY   STATUS    RESTARTS   AGE
+coredns-7ff77c879f-7t8nw      1/1     Running   0          8h
+coredns-7ff77c879f-bpkwh      1/1     Running   0          8h
+etcd-31                       1/1     Running   2          8h
+kube-apiserver-31             1/1     Running   2          8h
+kube-controller-manager-31    1/1     Running   2          8h
+kube-flannel-ds-amd64-76cdz   1/1     Running   0          2m29s
+kube-proxy-hwfss              1/1     Running   2          8h
+kube-scheduler-31             1/1     Running   2          8h
+```
+
+再次用`kubectl get nodes`查看节点状态，节点已经从`NotReady`变成`Ready`了：
+
+```text
+$ kubectl get nodes              
+NAME   STATUS   ROLES    AGE   VERSION
+31     Ready    master   8h    v1.18.2
+```
+
+
+
+
+
+
+
+例如，查看节点上Pod的运行情况：
+
+```text
+$ kubectl get pod -n kube-system
+NAME                         READY   STATUS    RESTARTS   AGE
+coredns-7ff77c879f-7t8nw     0/1     Pending   0          7h18m
+coredns-7ff77c879f-bpkwh     0/1     Pending   0          7h18m
+etcd-31                      1/1     Running   2          7h18m
+kube-apiserver-31            1/1     Running   2          7h18m
+kube-controller-manager-31   1/1     Running   2          7h18m
+kube-proxy-hwfss             1/1     Running   2          7h18m
+kube-scheduler-31            1/1     Running   2          7h18m
+```
 

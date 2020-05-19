@@ -325,17 +325,3 @@ NAME   STATUS   ROLES    AGE   VERSION
 
 
 
-例如，查看节点上Pod的运行情况：
-
-```text
-$ kubectl get pod -n kube-system
-NAME                         READY   STATUS    RESTARTS   AGE
-coredns-7ff77c879f-7t8nw     0/1     Pending   0          7h18m
-coredns-7ff77c879f-bpkwh     0/1     Pending   0          7h18m
-etcd-31                      1/1     Running   2          7h18m
-kube-apiserver-31            1/1     Running   2          7h18m
-kube-controller-manager-31   1/1     Running   2          7h18m
-kube-proxy-hwfss             1/1     Running   2          7h18m
-kube-scheduler-31            1/1     Running   2          7h18m
-```
-

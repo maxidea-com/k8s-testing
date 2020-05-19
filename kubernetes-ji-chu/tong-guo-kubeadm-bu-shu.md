@@ -145,11 +145,11 @@ done
 sudo curl -s https://gitee.com/maxidea/shell/raw/master/docker-install-k8s.sh | bash
 ```
 
-### 2）Master节点初始化
+### 2）节点初始化
 
 2-1）镜像设定
 
-使用阿里云镜像站：[https://developer.aliyun.com/mirror/kubernetes](https://developer.aliyun.com/mirror/kubernetes)
+主节点和工作节点上，都安装`kubelet、kubeadm、kubectl`三个组件，参考阿里云镜像站：[https://developer.aliyun.com/mirror/kubernetes](https://developer.aliyun.com/mirror/kubernetes)
 
 ```text
 apt-get update && apt-get install -y apt-transport-https
@@ -161,13 +161,21 @@ apt-get update
 apt-get install -y kubelet kubeadm kubectl
 ```
 
-使用我预先准备好的一键部署脚本：
+或者使用我预先准备好的一键部署脚本：
 
 ```text
 sudo curl -s https://gitee.com/maxidea/shell/raw/master/k8s-install-init.sh | bash
 ```
 
+2-2）主节点初始化
 
+由于网络原因，国内无法直接访问gcr.io，所以在kubeadm init时要指定参数，使用阿里云镜像：
+
+```text
+kubeadm init  --image-repository=registry.aliyuncs.com/google_containers
+```
+
+由于31节点同时用来做高可用集群的负载均衡器，所以要加上参数：
 
 
 

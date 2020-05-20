@@ -151,7 +151,7 @@ sudo curl -s https://gitee.com/maxidea/shell/raw/master/docker-install-k8s.sh | 
 sudo apt autoremove --purge snapd
 ```
 
-### 2）节点初始化
+### 2）主节点安装
 
 2-1）镜像设定
 
@@ -319,9 +319,76 @@ NAME   STATUS   ROLES    AGE   VERSION
 31     Ready    master   8h    v1.18.2
 ```
 
+### 3）工作节点安装
 
+3-1）工作节点安装基础组件
 
+如2-1的操作，各工作节点上运行一下一键部署脚本
 
+```text
+sudo curl -s https://gitee.com/maxidea/shell/raw/master/k8s-install-init.sh | bash
+```
+
+3-2）工作节点加入到集群
+
+如2-2初始化第一个控制平面时，获得的提示：
+
+```text
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join k8s-api.maxidea.com:6443 --token q9de5i.toeqluiwv9ij99o2 \
+    --discovery-token-ca-cert-hash sha256:2556bfaa0cb5a99771867b310eb00f38736736da33289d040a4e88c36d7d81af 
+```
+
+本例子里，我的三个工作节点（35、36、37）上均以root用户执行以上语句加入到集群里。
+
+3-3）token过期的处理方式
+
+一般主节点初始化时产生的token有效期只有24小时（使用命令`kubeadm token list`可查看token状态），过期后其他节点就没办法加入。
+
+token过期之后，我们需要在**控制平面（第一个主节点）**上重新生成新的token，才能继续操作集群。命令如下：
+
+`kubeadm token create`
+
+在控制平面上查看新的token id：
+
+```text
+kubeadm token list  
+TOKEN                     TTL         EXPIRES                     USAGES                   DESCRIPTION                                                EXTRA GROUPS
+qizy9v.32fin79ao8ekgrip   23h         2020-05-21T20:55:26+08:00   authentication,signing   <none>                                                     system:bootstrappers:kubeadm:default-node-token
+```
+
+生成新的token后，**工作节点**上运行`kubeadm join`替换后面的token即可，例如：
+
+```text
+# kubeadm join k8s-api.maxidea.com:6443 --token qizy9v.32fin79ao8ekgrip --discovery-token-ca-cert-hash sha256:2556bfaa0cb5a99771867b310eb00f38736736da33289d040a4e88c36d7d81af 
+W0520 20:59:08.784524    4146 join.go:346] [preflight] WARNING: JoinControlPane.controlPlane settings will be ignored when control-plane flag is not set.
+[preflight] Running pre-flight checks
+[preflight] Reading configuration from the cluster...
+[preflight] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -oyaml'
+[kubelet-start] Downloading configuration for the kubelet from the "kubelet-config-1.18" ConfigMap in the kube-system namespace
+[kubelet-start] Writing kubelet configuration to file "/var/lib/kubelet/config.yaml"
+[kubelet-start] Writing kubelet environment file with flags to file "/var/lib/kubelet/kubeadm-flags.env"
+[kubelet-start] Starting the kubelet
+[kubelet-start] Waiting for the kubelet to perform the TLS Bootstrap...
+
+This node has joined the cluster:
+* Certificate signing request was sent to apiserver and a response was received.
+* The Kubelet was informed of the new secure connection details.
+
+Run 'kubectl get nodes' on the control-plane to see this node join the cluster.
+```
+
+大约30秒后，在控制平面上再次运行`kubectl get nodes`，就可以看到各工作节点已经加入了：
+
+```text
+$ kubectl get nodes
+NAME   STATUS   ROLES    AGE     VERSION
+31     Ready    master   29h     v1.18.2
+35     Ready    <none>   4m56s   v1.18.2
+36     Ready    <none>   53s     v1.18.2
+37     Ready    <none>   43s     v1.18.2
+```
 
 
 

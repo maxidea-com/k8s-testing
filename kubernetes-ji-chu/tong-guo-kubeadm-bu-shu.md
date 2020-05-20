@@ -321,7 +321,7 @@ NAME   STATUS   ROLES    AGE   VERSION
 
 ### 3）工作节点安装
 
-3-1）工作节点安装基础组件
+#### 3-1）工作节点安装基础组件
 
 如2-1的操作，各工作节点上运行一下一键部署脚本
 
@@ -329,7 +329,7 @@ NAME   STATUS   ROLES    AGE   VERSION
 sudo curl -s https://gitee.com/maxidea/shell/raw/master/k8s-install-init.sh | bash
 ```
 
-3-2）工作节点加入到集群
+#### 3-2）工作节点加入到集群
 
 如2-2初始化第一个控制平面时，获得的提示：
 
@@ -342,7 +342,7 @@ kubeadm join k8s-api.maxidea.com:6443 --token q9de5i.toeqluiwv9ij99o2 \
 
 本例子里，我的三个工作节点（35、36、37）上均以root用户执行以上语句加入到集群里。
 
-3-3）token过期的处理方式
+#### 3-3）token过期的处理方式
 
 一般主节点初始化时产生的token有效期只有24小时（使用命令`kubeadm token list`可查看token状态），过期后其他节点就没办法加入。
 
@@ -358,7 +358,7 @@ TOKEN                     TTL         EXPIRES                     USAGES        
 qizy9v.32fin79ao8ekgrip   23h         2020-05-21T20:55:26+08:00   authentication,signing   <none>                                                     system:bootstrappers:kubeadm:default-node-token
 ```
 
-生成新的token后，**工作节点**上运行`kubeadm join`替换后面的token即可，例如：
+生成新的token后，**工作节点**上运行`kubeadm join`替换后面的`--token q9de5i.toeqluiwv9ij99o2` 为 `--token qizy9v.32fin79ao8ekgrip`即可，但`--discovery-token-ca-cert-hash sha256:2556bfaa0cb5a99771867b310eb00f38736736da33289d040a4e88c36d7d81af`保持不变，例如：
 
 ```text
 # kubeadm join k8s-api.maxidea.com:6443 --token qizy9v.32fin79ao8ekgrip --discovery-token-ca-cert-hash sha256:2556bfaa0cb5a99771867b310eb00f38736736da33289d040a4e88c36d7d81af 
@@ -379,7 +379,7 @@ This node has joined the cluster:
 Run 'kubectl get nodes' on the control-plane to see this node join the cluster.
 ```
 
-大约30秒后，在控制平面上再次运行`kubectl get nodes`，就可以看到各工作节点已经加入了：
+大约10～30秒后，节点上的pod启动完毕，在控制平面上再次运行`kubectl get nodes`，就可以看到各工作节点已经加入了：
 
 ```text
 $ kubectl get nodes
@@ -389,6 +389,70 @@ NAME   STATUS   ROLES    AGE     VERSION
 36     Ready    <none>   53s     v1.18.2
 37     Ready    <none>   43s     v1.18.2
 ```
+
+### 4）主节点高可用安装
+
+为了实现集群的高可用，我们在32和33主机上增加两个控制平面，把它们以主节点的方式加入到集群里。
+
+#### 4-1）主节点证书CA的分类和共享
+
+我们创建集群的第一个主节点的`/etc/kubernetes/pki/`目录下，主要有三种类型的证书：
+
+| 文件 | CN | 说明 |
+| :--- | :--- | :--- |
+| ca.pem,key | kubernetes-ca | k8s集群相关证书 |
+| etcd-ca.pem,key | etcd-ca | etcd集群相关证书 |
+| front-proxy-ca.pem,key | kubernetes-front-proxy-ca | [front-end proxy](https://kubernetes.io/docs/tasks/access-kubernetes-api/configure-aggregation-layer/) CA |
+
+其他加入集群的主节点，需要和这个控制平面共享这一些证书，所以可以复制到对应的主节点，或者使用`kubeadm`上传到集群的secret名称空间上去。
+
+```text
+# kubeadm init phase upload-certs --upload-certs
+W0521 00:32:26.439917     753 configset.go:202] WARNING: kubeadm cannot validate component configs for API groups [kubelet.config.k8s.io kubeproxy.config.k8s.io]
+[upload-certs] Storing the certificates in Secret "kubeadm-certs" in the "kube-system" Namespace
+[upload-certs] Using certificate key:
+76ac4d6f4ab459cd57bbb1ba874d7b6eae188116fcb0089eca621fcdad0ed490
+```
+
+完成后使用普通用户运行`kubectl get secret -n kube-system`命令查看。
+
+#### 4-2）其他主节点加入到集群
+
+完成证书复制后，可以开始把其他主节点加入成为控制平面，如2-2初始化第一个控制平面时，获得的提示：
+
+```text
+You can now join any number of control-plane nodes by copying certificate authorities
+and service account keys on each node and then running the following as root:
+
+  kubeadm join k8s-api.maxidea.com:6443 --token q9de5i.toeqluiwv9ij99o2 \
+    --discovery-token-ca-cert-hash sha256:2556bfaa0cb5a99771867b310eb00f38736736da33289d040a4e88c36d7d81af \
+    --control-plane 
+```
+
+同样，由于token进行了变更，**其他主节点**上运行`kubeadm join`替换后面的`--token q9de5i.toeqluiwv9ij99o2` 为 `--token qizy9v.32fin79ao8ekgrip`即可，记得最后面加上 `--control-plane`，不然会变成工作节点。后面再加上验证名称空间用的`certificate key`（如4-1生成的），完整的命令如下：
+
+```text
+  kubeadm join k8s-api.maxidea.com:6443 --token qizy9v.32fin79ao8ekgrip \
+    --discovery-token-ca-cert-hash sha256:2556bfaa0cb5a99771867b310eb00f38736736da33289d040a4e88c36d7d81af \
+    --control-plane --certificate-key 76ac4d6f4ab459cd57bbb1ba874d7b6eae188116fcb0089eca621fcdad0ed490
+```
+
+本例子里，我在32，33上执行这条命令，使它们都变成控制平面加入到集群里了。
+
+```text
+$ kubectl get nodes
+NAME   STATUS   ROLES    AGE     VERSION
+31     Ready    master   33h     v1.18.2
+32     Ready    master   5m10s   v1.18.2
+33     Ready    master   2m29s   v1.18.2
+35     Ready    <none>   3h49m   v1.18.2
+36     Ready    <none>   3h44m   v1.18.2
+37     Ready    <none>   3h44m   v1.18.2
+```
+
+
+
+
 
 
 

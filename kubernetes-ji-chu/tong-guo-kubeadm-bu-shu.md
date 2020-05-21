@@ -2,13 +2,11 @@
 
 ##  目标
 
-通过Kubeadm堆叠式部署K8s集群
+通过Kubeadm部署一个简单的K8s集群。
 
-## 一、准备工作
+## 一、节点准备工作
 
-### 1）节点准备工作
-
-#### 1-1）各节点命名方式
+### 1）各节点命名方式
 
 | 主机名 | 内网IP地址 | 域名 |
 | :--- | :--- | :--- |
@@ -20,7 +18,7 @@
 | 36 | 192.168.2.36 | node36.maxidea.com |
 | 37 | 192.168.2.37 | node37.maxidea.com |
 
-#### 1-2）各节点时间同步
+### 2）各节点时间同步
 
 `chronyd`使用网络上的时间服务器时间来测量本机时间的偏移量从而调整系统时钟。我们可以在里面自定义本地ntp服务器，或者默认使用它的时间同步源。
 
@@ -70,7 +68,7 @@ $bash batch.sh date
 2020年 05月 17日 星期日 13:43:02 CST
 ```
 
-#### 1-3）禁用swap设备
+### 3）禁用swap设备
 
 首先，在所有节点上运行`sudo swapoff -a`
 
@@ -95,7 +93,7 @@ done
 
 使用批量修改脚本为`bash batch_sudo.sh 'sed -i "s/\/swapfile/#&/" /etc/fstab'`
 
-#### 1-4）关闭防火墙
+### 4）关闭防火墙
 
 使用批量修改脚本为`bash batch_sudo.sh 'ufw disable'`
 
@@ -113,7 +111,7 @@ done
 
 将`SELINUX=enforcing`改为`SELINUX=disabled`
 
-#### 1-5）各节点域名解释
+### 5）各节点域名解释
 
 各节点上`/etc/hosts`要配置如1-1中给出的域名解释，使节点之间能互相访问。我这里使用批量脚本配置全部节点：
 
@@ -137,7 +135,7 @@ rmssh
 done
 ```
 
-#### 1-6）各节点上安装docker
+### 6）各节点上安装docker
 
 使用我预先准备好的一键部署脚本：
 
@@ -145,17 +143,17 @@ done
 sudo curl -s https://gitee.com/maxidea/shell/raw/master/docker-install-k8s.sh | bash
 ```
 
-#### 1-7）各节点上删除回环设备
+### 7）各节点上删除回环设备
 
 ```text
 sudo apt autoremove --purge snapd
 ```
 
-### 2）主节点安装
+## 二、主节点安装
 
-2-1）镜像设定
+### 1）镜像设定
 
-主节点和工作节点上，都安装`kubelet、kubeadm、kubectl`三个组件，参考阿里云镜像站：[https://developer.aliyun.com/mirror/kubernetes](https://developer.aliyun.com/mirror/kubernetes)
+主节点和工作节点上，都需要安装`kubelet、kubeadm、kubectl`三个组件，参考阿里云镜像站：[https://developer.aliyun.com/mirror/kubernetes](https://developer.aliyun.com/mirror/kubernetes)
 
 ```text
 apt-get update && apt-get install -y apt-transport-https
@@ -173,7 +171,7 @@ apt-get install -y kubelet kubeadm kubectl
 sudo curl -s https://gitee.com/maxidea/shell/raw/master/k8s-install-init.sh | bash
 ```
 
-#### 2-2）主节点初始化
+### 2）主节点初始化
 
 由于网络原因，国内无法直接访问gcr.io，所以在kubeadm init时要指定参数，使用阿里云镜像：
 
@@ -230,7 +228,7 @@ kubeadm join k8s-api.maxidea.com:6443 --token q9de5i.toeqluiwv9ij99o2 \
     --discovery-token-ca-cert-hash sha256:2556bfaa0cb5a99771867b310eb00f38736736da33289d040a4e88c36d7d81af         
 ```
 
-#### 2-3）主节点其他配置
+### 3）主节点其他配置
 
 接着按照上面提示执行三行命令（必须使用非root用户，我们默认使用系统ubuntu用户）：
 
@@ -272,7 +270,7 @@ runtime network not ready: NetworkReady=false reason:NetworkPluginNotReady messa
 
 则表示CNI插件还没有运行起来，我们可以先把`flannel`安装完成，再回过头来处理其他错误信息。
 
-#### 2-4）主节点安装CNI（Flannel）
+### 4）主节点安装CNI（Flannel）
 
 根据[https://kubernetes.io/docs/concepts/cluster-administration/addons/](https://kubernetes.io/docs/concepts/cluster-administration/addons/)页面的提示，我们可以找到flannel的项目github地址[https://github.com/coreos/flannel](https://github.com/coreos/flannel) ，并且在README.md下可以看到这个提示：
 
@@ -311,7 +309,7 @@ kube-proxy-hwfss              1/1     Running   2          8h
 kube-scheduler-31             1/1     Running   2          8h
 ```
 
-再次用`kubectl get nodes`查看节点状态，节点已经从`NotReady`变成`Ready`了：
+再次用`kubectl get nodes`查看节点状态，这个主节点已经从`NotReady`变成`Ready`了：
 
 ```text
 $ kubectl get nodes              
@@ -319,9 +317,9 @@ NAME   STATUS   ROLES    AGE   VERSION
 31     Ready    master   8h    v1.18.2
 ```
 
-### 3）工作节点安装
+## 三、工作节点安装
 
-#### 3-1）工作节点安装基础组件
+### 1）工作节点安装组件
 
 如2-1的操作，各工作节点上运行一下一键部署脚本
 
@@ -329,7 +327,7 @@ NAME   STATUS   ROLES    AGE   VERSION
 sudo curl -s https://gitee.com/maxidea/shell/raw/master/k8s-install-init.sh | bash
 ```
 
-#### 3-2）工作节点加入到集群
+### 2）工作节点加入到集群
 
 如2-2初始化第一个控制平面时，获得的提示：
 
@@ -342,7 +340,7 @@ kubeadm join k8s-api.maxidea.com:6443 --token q9de5i.toeqluiwv9ij99o2 \
 
 本例子里，我的三个工作节点（35、36、37）上均以root用户执行以上语句加入到集群里。
 
-#### 3-3）token过期的处理方式
+### 3-3）token过期的处理方式
 
 一般主节点初始化时产生的token有效期只有24小时（使用命令`kubeadm token list`可查看token状态），过期后其他节点就没办法加入。
 
@@ -390,11 +388,11 @@ NAME   STATUS   ROLES    AGE     VERSION
 37     Ready    <none>   43s     v1.18.2
 ```
 
-### 4）主节点高可用安装
+## 四、主节点高可用安装
 
 为了实现集群的高可用，我们在32和33主机上增加两个控制平面，把它们以主节点的方式加入到集群里。
 
-#### 4-1）主节点证书CA的分类和共享
+### 1）主节点证书CA的分类和共享
 
 我们创建集群的第一个主节点的`/etc/kubernetes/pki/`目录下，主要有三种类型的证书：
 
@@ -416,7 +414,7 @@ W0521 00:32:26.439917     753 configset.go:202] WARNING: kubeadm cannot validate
 
 完成后使用普通用户运行`kubectl get secret -n kube-system`命令查看。
 
-#### 4-2）其他主节点加入到集群
+### 2）其他主节点加入到集群
 
 完成证书复制后，可以开始把其他主节点加入成为控制平面，如2-2初始化第一个控制平面时，获得的提示：
 
@@ -450,7 +448,7 @@ NAME   STATUS   ROLES    AGE     VERSION
 37     Ready    <none>   3h44m   v1.18.2
 ```
 
-
+到此为止，k8s一个简单的集群安装完成。
 
 
 

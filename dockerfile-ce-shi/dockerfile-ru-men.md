@@ -20,7 +20,7 @@ Dockerfile 中的每一条命令，都在 Docker 镜像中以一个独立镜像�
 FROM alpine:3.11
 
 RUN apk update && apk --no-cache add python3 curl bind-tools iproute2 iptables ipvsadm
-RUN pip3 install --no-cache-dir --upgrade pip && \
+RUN pip3 install -i https://pypi.doubanio.com/simple --no-cache-dir --upgrade pip && \
   pip3 install --no-cache-dir -q Flask==0.12.4 requests==2.21.0
 
 ADD demo.py /usr/local/bin/
@@ -33,6 +33,8 @@ VOLUME ["/simon-testing/dockerfile/data"]
 
 ENTRYPOINT python3 /usr/local/bin/demo.py
 ```
+
+其中`-i` [`https://pypi.doubanio.com/simpl`](https://pypi.doubanio.com/simple)使用国内的镜像加速，避免出现超时错误。
 
 在同一目录下创建一个demo.py，使用Flask框架简单搭建一个服务：
 

@@ -242,6 +242,96 @@ flask-demo-app v1.0 / ClientIP: 10.244.1.3, ServerName: test1-86d54d9655-c9h5m, 
 
 ![&#x6765;&#x6E90;&#xFF1A;https://github.com/cilium/k8s-iptables-diagram](../.gitbook/assets/iptables.svg)
 
+### 4）service的ipvs规则
+
+对于使用ipvs的集群，上述规则在ipvs下显示如下，对比iptables，ipvs更为简单和高效：
+
+```text
+# ipvsadm -L -n
+IP Virtual Server version 1.2.1 (size=4096)
+Prot LocalAddress:Port Scheduler Flags
+  -> RemoteAddress:Port           Forward Weight ActiveConn InActConn
+TCP  10.96.0.1:443 rr
+  -> 192.168.2.31:6443            Masq    1      0          0         
+  -> 192.168.2.32:6443            Masq    1      0          0         
+  -> 192.168.2.33:6443            Masq    1      0          0         
+TCP  10.96.0.10:53 rr
+  -> 10.244.0.2:53                Masq    1      0          0         
+  -> 10.244.0.3:53                Masq    1      0          0         
+TCP  10.96.0.10:9153 rr
+  -> 10.244.0.2:9153              Masq    1      0          0         
+  -> 10.244.0.3:9153              Masq    1      0          0         
+TCP  10.102.176.227:80 rr
+  -> 10.244.1.4:80                Masq    1      0          0         
+  -> 10.244.2.2:80                Masq    1      0          0         
+  -> 10.244.3.4:80                Masq    1      0          0         
+UDP  10.96.0.10:53 rr
+  -> 10.244.0.2:53                Masq    1      0          0         
+  -> 10.244.0.3:53                Masq    1      0          0         
+```
+
+## 四、ConfigMap操作
+
+### 1）列出configmap资源（kebu-system名称空间下）
+
+```text
+$ kubectl get cm -n kube-system
+NAME                                 DATA   AGE
+coredns                              1      3d23h
+extension-apiserver-authentication   6      3d23h
+kube-flannel-cfg                     2      3d15h
+kube-proxy                           2      3d23h
+kubeadm-config                       2      3d23h
+kubelet-config-1.18                  1      3d23h
+```
+
+### 2）修改kube-proxy
+
+`kubectl edit cm kube-proxy -n kube-system`
+
+`-n kube-system`为指定名称空间。
+
+修改完kube-proxy，需要删除并重新生成kube-system下的对应6个kube-proxy的pod（由于这里测试用的主节点+工作节点有6个）。
+
+实现批量删除，通过labels：
+
+```text
+$ kubectl get pods -n kube-system --show-labels
+NAME                          READY   STATUS    RESTARTS   AGE     LABELS
+coredns-7ff77c879f-7t8nw      1/1     Running   0          3d23h   k8s-app=kube-dns,pod-template-hash=7ff77c879f
+coredns-7ff77c879f-bpkwh      1/1     Running   0          3d23h   k8s-app=kube-dns,pod-template-hash=7ff77c879f
+etcd-31                       1/1     Running   2          3d23h   component=etcd,tier=control-plane
+etcd-32                       1/1     Running   0          2d14h   component=etcd,tier=control-plane
+etcd-33                       1/1     Running   0          2d14h   component=etcd,tier=control-plane
+kube-apiserver-31             1/1     Running   2          3d23h   component=kube-apiserver,tier=control-plane
+kube-apiserver-32             1/1     Running   0          2d14h   component=kube-apiserver,tier=control-plane
+kube-apiserver-33             1/1     Running   0          2d14h   component=kube-apiserver,tier=control-plane
+kube-controller-manager-31    1/1     Running   3          3d23h   component=kube-controller-manager,tier=control-plane
+kube-controller-manager-32    1/1     Running   1          2d14h   component=kube-controller-manager,tier=control-plane
+kube-controller-manager-33    1/1     Running   0          2d14h   component=kube-controller-manager,tier=control-plane
+kube-flannel-ds-amd64-76cdz   1/1     Running   0          3d15h   app=flannel,controller-revision-hash=56c5465959,pod-template-generation=1,tier=node
+kube-flannel-ds-amd64-ct8v2   1/1     Running   0          2d17h   app=flannel,controller-revision-hash=56c5465959,pod-template-generation=1,tier=node
+kube-flannel-ds-amd64-h6m9w   1/1     Running   0          2d17h   app=flannel,controller-revision-hash=56c5465959,pod-template-generation=1,tier=node
+kube-flannel-ds-amd64-l6rfc   1/1     Running   0          2d14h   app=flannel,controller-revision-hash=56c5465959,pod-template-generation=1,tier=node
+kube-flannel-ds-amd64-nm5rl   1/1     Running   0          2d17h   app=flannel,controller-revision-hash=56c5465959,pod-template-generation=1,tier=node
+kube-flannel-ds-amd64-qlv78   1/1     Running   0          2d14h   app=flannel,controller-revision-hash=56c5465959,pod-template-generation=1,tier=node
+kube-proxy-27226              1/1     Running   0          2d14h   controller-revision-hash=55877fc8b6,k8s-app=kube-proxy,pod-template-generation=1
+kube-proxy-5qmnq              1/1     Running   0          2d17h   controller-revision-hash=55877fc8b6,k8s-app=kube-proxy,pod-template-generation=1
+kube-proxy-79vk2              1/1     Running   0          2d17h   controller-revision-hash=55877fc8b6,k8s-app=kube-proxy,pod-template-generation=1
+kube-proxy-hwfss              1/1     Running   2          3d23h   controller-revision-hash=55877fc8b6,k8s-app=kube-proxy,pod-template-generation=1
+kube-proxy-ms2lx              1/1     Running   0          2d17h   controller-revision-hash=55877fc8b6,k8s-app=kube-proxy,pod-template-generation=1
+kube-proxy-z68st              1/1     Running   0          2d14h   controller-revision-hash=55877fc8b6,k8s-app=kube-proxy,pod-template-generation=1
+kube-scheduler-31             1/1     Running   4          3d23h   component=kube-scheduler,tier=control-plane
+kube-scheduler-32             1/1     Running   0          2d14h   component=kube-scheduler,tier=control-plane
+kube-scheduler-33             1/1     Running   1          2d14h   component=kube-scheduler,tier=control-plane
+```
+
+看到这6个pod都具有同一个label叫`k8s-app=kube-proxy,` 所以如2-2的操作，批量删除加入`label`后的指令是：
+
+`kubectl delete pods -l k8s-app=kube-proxy -n kube-system`
+
+kube-proxy的pod被删除后重新根据修改后的配置清单生成新的pod。
+
 
 
 

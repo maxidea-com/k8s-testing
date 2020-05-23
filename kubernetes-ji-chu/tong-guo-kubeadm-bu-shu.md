@@ -340,7 +340,7 @@ kubeadm join k8s-api.maxidea.com:6443 --token q9de5i.toeqluiwv9ij99o2 \
 
 本例子里，我的三个工作节点（35、36、37）上均以root用户执行以上语句加入到集群里。
 
-### 3-3）token过期的处理方式
+### 3）token过期的处理方式
 
 一般主节点初始化时产生的token有效期只有24小时（使用命令`kubeadm token list`可查看token状态），过期后其他节点就没办法加入。
 
@@ -387,6 +387,14 @@ NAME   STATUS   ROLES    AGE     VERSION
 36     Ready    <none>   53s     v1.18.2
 37     Ready    <none>   43s     v1.18.2
 ```
+
+### 4）工作节点移除
+
+ 对节点执行维护操作之前（例如：内核升级，硬件维护等），可以使用 `kubectl drain` 安全驱逐节点上面所有的 pod。
+
+`kubectl drain <node name>` \#该节点上的pod会被删除并调度到其他节点上面。
+
+`kubectl cordon/uncordon <node name>` \#维护/结束维护节点，pod不移除
 
 ## 四、主节点高可用安装
 

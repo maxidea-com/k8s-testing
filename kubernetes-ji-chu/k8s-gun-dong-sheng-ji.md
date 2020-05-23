@@ -2,7 +2,7 @@
 description: 'https://kubernetes.io/docs/concepts/workloads/controllers/deployment/'
 ---
 
-# k8s滚动升级
+# k8s滚动发布
 
 首先把pod增加到10个：
 
@@ -30,14 +30,22 @@ test2-69444f54b-4phj2    1/1     Running   0          5h19m   10.244.3.3   37   
 然后通过命令进行滚动发布v1.1版本：
 
 ```text
-kubectl set image deployments test1 test1="maxidea/flask-demo-app:v1.1"
+kubectl set image deployments/test1 flask-demo-app="maxidea/flask-demo-app:v1.1"
 ```
 
-如果使用金丝雀发布，只更新一个pod，那么命令改成：
+如果使用部分按比例发布，只更部分pod，那么命令改成：
 
+```text
+kubectl set image deployments/test1 flask-demo-app="maxidea/flask-demo-app:v1.1" && kubectl rollout pause deployment/test1
+```
 
+检查过发布没有问题，可以继续发布，使用命令：
 
+`kubectl rollout resume deployment/test1`
 
+如果需要回滚，使用命令：
+
+`kubectl rollout undo deployment/test1`
 
 
 

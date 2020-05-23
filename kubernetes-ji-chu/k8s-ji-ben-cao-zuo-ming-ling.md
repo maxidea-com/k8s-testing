@@ -194,9 +194,9 @@ Events:            <none>
 flask-demo-app v1.0 / ClientIP: 10.244.1.3, ServerName: test1-86d54d9655-q9lv5, ServerIP: 10.244.2.2!
 ```
 
-### 2）扩展service下的pod个数
+### 2）扩展/缩小service下的pod个数
 
-例如，把test1的副本数量扩展到三个：
+例如，把test1的副本数量扩展/缩少到三个（用同一命令指定数量即可）：
 
 `kubectl scale deployment/test1 --replicas=3`
 
@@ -331,18 +331,6 @@ kube-scheduler-33             1/1     Running   1          2d14h   component=kub
 `kubectl delete pods -l k8s-app=kube-proxy -n kube-system`
 
 kube-proxy的pod被删除后重新根据修改后的配置清单生成新的pod。
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

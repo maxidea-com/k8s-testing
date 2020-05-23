@@ -44,6 +44,6 @@
 * [Kubernetes基础知识](kubernetes-ji-chu/kubernetes-ji-chu-zhi-shi.md)
 * [通过Kubeadm部署K8s集群](kubernetes-ji-chu/tong-guo-kubeadm-bu-shu.md)
 * [K8s基本操作命令](kubernetes-ji-chu/k8s-ji-ben-cao-zuo-ming-ling.md)
-* [k8s滚动升级](kubernetes-ji-chu/k8s-gun-dong-sheng-ji.md)
+* [k8s滚动发布](kubernetes-ji-chu/k8s-gun-dong-sheng-ji.md)
 * [K8s的资源配置清单yml](kubernetes-ji-chu/k8s-de-zi-yuan-pei-zhi-qing-dan-yml.md)
 

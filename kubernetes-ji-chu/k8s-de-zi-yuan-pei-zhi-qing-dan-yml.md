@@ -4,6 +4,8 @@
 
 在默认的名称空间下创建`wordpress:5-php7.2-fpm、nginx、mysql`的pod。
 
+由于nginx和wordpress（php-fpm）需要共享一个volume，所以这两个pod需要指定在同一node上部署（使用nodeSelector）。
+
 ## 一、设置nginx
 
 ### 1）nginx的default.conf配置

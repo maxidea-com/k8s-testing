@@ -86,14 +86,14 @@ spec:
           mountPath: /etc/nginx/conf.d/
           readOnly: true
         - name: wwwdata
-          mountPath: /var/www/html/
+          mountPath: /var/www/html
       volumes:
       - name: ngxconfs
         configMap:
           name: nginx-conf
           optional: false
-      - hostPath:
-        name: wwwdata
+      - name: wwwdata
+        hostPath:
           path: /root/wwwdata
         
 ---
@@ -171,9 +171,105 @@ spec:
 
 ## 三、设置wordpress（php-fpm镜像版本）
 
+创建wordpress.yaml
 
+```text
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fpm-conf
+  namespace: default
+data:
+  www.conf: |
+    [www]
+    user = www-data
+    group = www-data
+    listen = 0.0.0.0:9000
+    pm = dynamic
+    pm.max_children = 5
+    pm.start_servers = 2
+    pm.min_spare_servers = 1
+    pm.max_spare_servers = 3
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: wordpress
+  name: wordpress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wordpress
+  template:
+    metadata:
+      labels:
+        app: wordpress
+    spec:
+      containers:
+      - image: wordpress:5-php7.2-fpm
+        name: wordpress
+        volumeMounts:
+        - name: fpmconfs
+          mountPath: /usr/local/etc/php-fpm.d/
+          readOnly: true
+        - name: wwwdata
+          mountPath: /var/www/html
+        env:
+        - name: WORDPRESS_DB_NAME
+          value: wpdb
+        - name: WORDPRESS_DB_USER
+          value: wpuser
+        - name: WORDPRESS_DB_PASSWORD
+          value: wppass
+        - name: WORDPRESS_DB_HOST
+          value: "wpdb.default.svc.cluster.local."
+      volumes:
+      - name: fpmconfs
+        configMap:
+          name: fpm-conf
+          optional: fals
+      - name: wwwdata
+        hostPath:
+          path: /root/wwwdata
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: wordpress
+  name: wordpress
+  namespace: default
+spec:
+  ports:
+  - name: "80"
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: wordpress
+  type: ClusterIP
 
+```
 
+四、创建应用
+
+```text
+$ kubectl apply -f mysql.yaml 
+deployment.apps/wpdb created
+service/wpdb created
+
+$ kubectl apply -f wordpress.yaml 
+configmap/fpm-conf unchanged
+deployment.apps/wordpress created
+service/wordpress created
+
+$ kubectl apply -f nginx.yaml 
+configmap/nginx-conf created
+deployment.apps/nginx created
+service/nginx created
+```
 
 
 

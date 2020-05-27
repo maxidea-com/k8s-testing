@@ -21,7 +21,16 @@ NAME   STATUS   ROLES    AGE     VERSION
 37     Ready    <none>   6d23h   v1.18.2
 ```
 
-## 一、设置nginx
+我选择为36节点打上label：
+
+```text
+kubectl label nodes 36 nodetype=wordpress
+node/36 labeled
+```
+
+用`kubectl get nodes --show-labels` 可以看到36节点最后面加入了`nodetype=wordpress`标签。
+
+## 二、设置nginx
 
 ### 1）nginx的default.conf配置
 
@@ -95,6 +104,8 @@ spec:
       labels:
         app: nginx
     spec:
+      nodeSelector:
+        nodetype: wordpress #指定使用的node
       containers:
       - image: nginx:alpine
         name: nginx
@@ -224,6 +235,8 @@ spec:
       labels:
         app: wordpress
     spec:
+      nodeSelector:
+        nodetype: wordpress
       containers:
       - image: wordpress:5-php7.2-fpm
         name: wordpress

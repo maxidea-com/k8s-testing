@@ -6,6 +6,21 @@
 
 由于nginx和wordpress（php-fpm）需要共享一个volume，所以这两个pod需要指定在同一node上部署（使用nodeSelector）。
 
+## 一、给一个node打标签
+
+目前我们测试环境有三个工作节点，分别是35、36、37：
+
+```text
+kubectl get nodes
+NAME   STATUS   ROLES    AGE     VERSION
+31     Ready    master   8d      v1.18.2
+32     Ready    master   6d19h   v1.18.2
+33     Ready    master   6d19h   v1.18.2
+35     Ready    <none>   6d23h   v1.18.2
+36     Ready    <none>   6d23h   v1.18.2
+37     Ready    <none>   6d23h   v1.18.2
+```
+
 ## 一、设置nginx
 
 ### 1）nginx的default.conf配置

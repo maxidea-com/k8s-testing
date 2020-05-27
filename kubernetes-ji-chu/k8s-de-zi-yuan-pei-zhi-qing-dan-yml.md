@@ -212,7 +212,7 @@ data:
     [www]
     user = www-data
     group = www-data
-    listen = 0.0.0.0:9000
+    listen = 127.0.0.1:9000
     pm = dynamic
     pm.max_children = 5
     pm.start_servers = 2
@@ -312,9 +312,27 @@ wpdb-698dcf9f99-pz58j        1/1     Running            0          2m53s   10.24
 
 ```
 
+P.S. 在部署wordpress的容器时我曾经遇到`CrashLoopBackOff`错误，用`kubectl logs 容器Name -p`查看日志进行排障，显示为FPM的设置问题。
 
+```text
+[27-May-2020 16:03:34] ERROR: unable to bind listening socket for address 'wordpress.default.svc.cluster.local.:9000': Cannot assign requested address (99)
+[27-May-2020 16:03:34] ERROR: FPM initialization failed
+```
 
+当时误把socket的监听地址写成容器地址了。
 
+查看pod的端口：
+
+```text
+$ kubectl get svc
+NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+kubernetes   ClusterIP   10.96.0.1        <none>        443/TCP        8d
+nginx        NodePort    10.100.128.76    <none>        80:31456/TCP   72m
+wordpress    NodePort    10.100.230.206   <none>        80:31009/TCP   94s
+wpdb         ClusterIP   10.99.43.10      <none>        3306/TCP       73m
+```
+
+访问35、36、37任意一台工作节点的ip+31535端口，即可访问到wordpress了。
 
 
 

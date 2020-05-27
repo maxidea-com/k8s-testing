@@ -246,6 +246,8 @@ flask-demo-app v1.0 / ClientIP: 10.244.1.3, ServerName: test1-86d54d9655-c9h5m, 
 
 对于使用ipvs的集群，上述规则在ipvs下显示如下，对比iptables，ipvs更为简单和高效：（通过修改`kube-proxy`的`configMap`里的`mode`字段为`“ipvs”`来配置）
 
+工作节点上安装`apt install ipvsadm`
+
 ```text
 # ipvsadm -L -n
 IP Virtual Server version 1.2.1 (size=4096)

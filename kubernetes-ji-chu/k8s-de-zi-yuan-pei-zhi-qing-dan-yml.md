@@ -283,7 +283,7 @@ spec:
 
 ```
 
-四、创建应用
+## 四、创建应用
 
 ```text
 $ kubectl apply -f mysql.yaml 
@@ -301,7 +301,16 @@ deployment.apps/nginx created
 service/nginx created
 ```
 
+查看pod的状态
 
+```text
+$ kubectl get pod -o wide
+NAME                         READY   STATUS             RESTARTS   AGE     IP            NODE   NOMINATED NODE   READINESS GATES
+nginx-7fc4b6d479-q5q6q       1/1     Running            0          2m6s    10.244.2.22   36     <none>           <none>
+wordpress-666b699b97-5lggt   0/1     CrashLoopBackOff   7          15m     10.244.2.20   36     <none>           <none>
+wpdb-698dcf9f99-pz58j        1/1     Running            0          2m53s   10.244.2.21   36     <none>           <none>
+
+```
 
 
 

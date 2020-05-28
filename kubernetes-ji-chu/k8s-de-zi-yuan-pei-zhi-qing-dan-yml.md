@@ -332,7 +332,7 @@ wordpress    NodePort    10.100.230.206   <none>        80:31009/TCP   94s
 wpdb         ClusterIP   10.99.43.10      <none>        3306/TCP       73m
 ```
 
-访问35、36、37任意一台工作节点的ip+31535端口，即可访问到wordpress了。
+
 
 
 

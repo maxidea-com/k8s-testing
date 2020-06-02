@@ -46,4 +46,5 @@
 * [K8s基本操作命令](kubernetes-ji-chu/k8s-ji-ben-cao-zuo-ming-ling.md)
 * [k8s滚动发布](kubernetes-ji-chu/k8s-gun-dong-sheng-ji.md)
 * [通过K8s部署wordpress:5-php7.2-fpm](kubernetes-ji-chu/k8s-de-zi-yuan-pei-zhi-qing-dan-yml.md)
+* [Ingress安装](kubernetes-ji-chu/ingress-an-zhuang.md)
 

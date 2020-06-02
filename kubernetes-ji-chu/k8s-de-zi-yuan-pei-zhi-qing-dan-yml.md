@@ -273,10 +273,10 @@ metadata:
   namespace: default
 spec:
   ports:
-  - name: "80"
-    port: 80
+  - name: "9000"
+    port: 9000
     protocol: TCP
-    targetPort: 80
+    targetPort: 9000
   selector:
     app: wordpress
   type: ClusterIP
@@ -332,7 +332,7 @@ wordpress    NodePort    10.100.230.206   <none>        80:31009/TCP   94s
 wpdb         ClusterIP   10.99.43.10      <none>        3306/TCP       73m
 ```
 
-
+遗留问题：wordpress.yaml配置问题，导致该pod和docker无法正常启动，留日后修改。问题文件gitee路径：[https://gitee.com/maxidea/k8s-testing-files/blob/master/k8s/wordpress/wordpress.yaml](https://gitee.com/maxidea/k8s-testing-files/blob/master/k8s/wordpress/wordpress.yaml)
 
 
 

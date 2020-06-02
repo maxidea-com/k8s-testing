@@ -334,5 +334,15 @@ kube-scheduler-33             1/1     Running   1          2d14h   component=kub
 
 kube-proxy的pod被删除后重新根据修改后的配置清单生成新的pod。
 
+## 五、deployments/rc/rs删除操作
 
+上面测试用的两个pod，如果直接使用`kubectl delete pod`来删除，过一会又会生成新的pod，原因是对应的pod在创建时，kubernetes创建了对应的deployment和rs（副本集replicasets）来监控pod的生命周期。所以，要删除这两个pod，首先要删除对应的deployment/rc/rs。
+
+检查是否创建了deployments任务：`kubectl get deployments`
+
+检查是否创建了副本控制器ReplicationController：`kubectl get rc`
+
+检查死否创建了副本集replicasets：`kubectl get rs`
+
+删除对应的对应的deployment：`kubectl delete deployment test1`
 

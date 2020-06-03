@@ -55,6 +55,70 @@ ingress-nginx-admission-patch-t568k         0/1     Completed           0       
 ingress-nginx-controller-866488c6d4-85lph   0/1     ContainerCreating   0          2m48s
 ```
 
+修改port和type：
+
+```text
+# Source: ingress-nginx/templates/controller-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    helm.sh/chart: ingress-nginx-2.0.3
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/version: 0.32.0
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: controller
+  name: ingress-nginx-controller
+  namespace: ingress-nginx
+spec:
+  type: NodePort #从默认的LoadBalancer修改为NodePort
+  externalTrafficPolicy: Local
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: http
+      nodePort: 30080 #增加端口指定
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: https
+      nodePort: 30443 #增加端口指定
+  selector:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/component: controller
+```
+
+
+
+
+
+
+
+
+
+```text
+kubectl get svc -n ingress-nginx
+NAME                                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
+ingress-nginx-controller             NodePort    10.96.158.117   <none>        80:30080/TCP,443:30443/TCP   7h22m
+ingress-nginx-controller-admission   ClusterIP   10.97.62.60     <none>        443/TCP                      7h22m
+```
+
+测试：
+
+```text
+$ curl 10.96.158.117
+<html>
+<head><title>404 Not Found</title></head>
+<body>
+<center><h1>404 Not Found</h1></center>
+<hr><center>nginx/1.17.10</center>
+</body>
+</html>
+```
+
 ## 二、Ingress 安装
 
 

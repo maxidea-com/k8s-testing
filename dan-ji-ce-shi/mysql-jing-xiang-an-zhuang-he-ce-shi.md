@@ -10,7 +10,7 @@ description: 'https://hub.docker.com/_/mysql'
 
 在宿主机上创建一个目录存放数据（作为存储卷）：
 
-`sudo mkdir /data/mysql`
+`sudo mkdir -p /data/mysql`
 
 创建mysql容器时，加入`-v [宿主机存储卷]:[容器存储路径]` 指定绑定的存储卷位置，例如：
 

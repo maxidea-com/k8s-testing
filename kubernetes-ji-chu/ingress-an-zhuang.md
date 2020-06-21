@@ -93,17 +93,19 @@ spec:
 
 
 
-
-
-
-
-
-
 ```text
 kubectl get svc -n ingress-nginx
 NAME                                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
 ingress-nginx-controller             NodePort    10.96.158.117   <none>        80:30080/TCP,443:30443/TCP   7h22m
 ingress-nginx-controller-admission   ClusterIP   10.97.62.60     <none>        443/TCP                      7h22m
+```
+
+```text
+$ kubectl get pods -n ingress-nginx -o wide
+NAME                                        READY   STATUS      RESTARTS   AGE   IP            NODE   NOMINATED NODE   READINESS GATES
+ingress-nginx-admission-create-8mhz8        0/1     Completed   0          8h    10.244.3.19   37     <none>           <none>
+ingress-nginx-admission-patch-t568k         0/1     Completed   0          8h    10.244.1.18   35     <none>           <none>
+ingress-nginx-controller-866488c6d4-85lph   1/1     Running     0          8h    10.244.3.21   37     <none>           <none>
 ```
 
 测试：

@@ -56,5 +56,9 @@ terminal会返回错误信息：`You cannot attach to a stopped container, start
 
 这样exit后容器不会停止运行。
 
+查看容器内的进程（遇到容器内没有ps命令时特有用）：
 
+`sudo docker top 容器ID`
+
+`sudo docker stats 容器ID`
 

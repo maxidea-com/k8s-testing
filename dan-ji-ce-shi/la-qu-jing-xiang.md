@@ -60,5 +60,21 @@ terminal会返回错误信息：`You cannot attach to a stopped container, start
 
 `sudo docker top 容器ID`
 
-`sudo docker stats 容器ID`
+查看容器资料占用情况：
+
+`sudo docker stats 容器ID --no-stream`
+
+\[CONTAINER\]：以短格式显示容器的 ID。
+
+\[CPU %\]：CPU 的使用情况。
+
+\[MEM USAGE / LIMIT\]：当前使用的内存和最大可以使用的内存。
+
+\[MEM %\]：以百分比的形式显示内存使用情况。
+
+\[NET I/O\]：网络 I/O 数据。
+
+\[BLOCK I/O\]：磁盘 I/O 数据。
+
+\[PIDS\]：PID 号。
 

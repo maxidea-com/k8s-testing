@@ -64,6 +64,10 @@ kube-system       Active   2d20h
 
 以上`namespace`均可以简写成`ns`，如：`kubectl create ns new-space-name`
 
+### 4）列出集群内所有名称空间下所有pod：
+
+`kubectl get pod --all-namespaces`
+
 ## 二、Pod操作
 
 ### 1）根据配置清单创建pod：
@@ -149,6 +153,33 @@ new-pod                  1/1     Running   0          15h     <none>
 test1-86d54d9655-q9lv5   1/1     Running   0          18h     app=test1,pod-template-hash=86d54d9655
 test2-69444f54b-4phj2    1/1     Running   0          7m40s   app=test2,pod-template-hash=69444f54b
 ```
+
+### 7）查看指定名称空间下pod的资源使用情况
+
+`kubectl top pods -n [namespaces]`
+
+例如：
+
+```text
+[root@consumer-prd-paas-k8s-masterb-0 ~]# kubectl top pods -n momtest
+NAME                                   CPU(cores)   MEMORY(bytes)            
+r-49b86                                   132m         249Mi           
+r-569wf                                   177m         353Mi           
+r-5g9jp                                   168m         284Mi           
+r-6sp9t                                   164m         237Mi           
+r-859fw                                   154m         263Mi           
+r-8ggdz                                   183m         260Mi 
+```
+
+对指定pod资源状态自动刷新：
+
+`watch 'kubectl top pods -n momtest r-vqnc2'` 
+
+### 8）查看每个节点主机资源使用情况
+
+`kubectl top node`
+
+
 
 ## 三、Service操作
 

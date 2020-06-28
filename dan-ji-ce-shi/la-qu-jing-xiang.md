@@ -78,3 +78,12 @@ terminal会返回错误信息：`You cannot attach to a stopped container, start
 
 \[PIDS\]：PID 号。
 
+### 实际样例
+
+```text
+docker stats --no-stream $(docker ps --format={{.Names}})
+CONTAINER           CPU %               MEM USAGE / LIMIT       MEM %               NET I/O             BLOCK I/O           PIDS
+sonarqube_app_1     38.83%              2.554 GiB / 6.796 GiB   37.58%              1.44 GB / 1.38 GB   38 GB / 5.2 GB      211
+sonarqube_db_1      10.06%              1.342 GiB / 6.796 GiB   19.75%              587 MB / 3.69 GB    124 GB / 70 GB      11
+```
+
